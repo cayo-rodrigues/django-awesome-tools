@@ -1,5 +1,5 @@
+from django.core.exceptions import FieldError, ValidationError
 from django.db.models import Model
-from django.forms import ValidationError
 from django.http import Http404
 from rest_framework.exceptions import APIException
 
@@ -23,7 +23,7 @@ def get_object_or_error(klass: Model, exception: APIException = Http404, **kwarg
     """
     try:
         return klass.objects.get(**kwargs)
-    except (klass.DoesNotExist, ValidationError):
+    except (klass.DoesNotExist, ValidationError, ValueError, FieldError):
         raise exception
 
 
@@ -54,7 +54,7 @@ def get_list_or_error(
     """
     try:
         result = klass.objects.filter(**kwargs)
-    except ValidationError:
+    except (ValidationError, ValueError, FieldError):
         raise error_klass
 
     if result or accept_empty:
