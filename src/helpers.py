@@ -67,9 +67,9 @@ def set_and_destroy(
     klass: Model, attr: str, value: list[Model], related_klass: Model, **kwargs
 ):
     """
-    This function basically sets a new value in a foreign key field and erases any previous
-    values that were related to `klass`. For it to work, **you must set `null=True` in your
-    model**, otherwise, the values will not be subsitituted, they will only be added.
+    This function basically sets a new list of values in of a foreign key field and erases any
+    previous values that were related to `klass`. For it to work, **you must set `null=True`
+    in your model**, otherwise, the values will not be subsitituted, they will only be added.
 
     - `klass` -> The model on the side 1 of a 1:N relationship, the owner of the relation,
     in which the new values will be set
