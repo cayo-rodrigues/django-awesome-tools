@@ -1,3 +1,6 @@
+from rest_framework.serializers import Serializer
+
+
 class SerializerByMethodMixin:
     """
     This mixin overrides the `get_serializer_class` method of generic views. It's
@@ -20,6 +23,8 @@ class SerializerByMethodMixin:
         }
     ```
     """
+
+    method_serializers: dict[str, Serializer] = None
 
     def get_serializer_class(self):
         return self.method_serializers.get(self.request.method, self.serializer_class)
@@ -50,6 +55,8 @@ class SerializerByActionMixin:
     ```
     """
 
+    action_serializers: dict[str, Serializer] = None
+
     def get_serializer_class(self):
         return self.action_serializers.get(self.action, self.serializer_class)
 
@@ -75,6 +82,8 @@ class SerializerByDetailActionsMixin:
         detail_serializer_class = MyDetailSerializer
     ```
     """
+
+    detail_serializer_class: Serializer = None
 
     def get_serializer_class(self):
         DETAIL_ACTIONS = ["retrieve", "update", "partial_update", "destroy"]
@@ -114,6 +123,7 @@ class SerializerBySafeActionsMixin:
     """
 
     safe_actions: list[str] = ["list", "retrieve"]
+    safe_serializer_class: Serializer = None
 
     def get_serializer_class(self):
         if self.action in self.safe_actions:
