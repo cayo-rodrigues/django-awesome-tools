@@ -1,6 +1,5 @@
 from django.contrib.auth.models import BaseUserManager
-from django.db.models import FieldDoesNotExist
-from django.forms import ValidationError
+from django.core.exceptions import FieldDoesNotExist, ValidationError
 
 
 class CustomUserManager(BaseUserManager):
@@ -60,7 +59,7 @@ class CustomUserManager(BaseUserManager):
     super_start_active: bool = True
 
     required_fields: list[str] = []
-    auto_required_fields: dict[str, function] = {}
+    auto_required_fields: dict[str] = {}
 
     def create(self, email: str, password: str, **extra_fields):
         FORBIDDEN_FIELDS = ["email", "password", "is_staff", "is_superuser", "is_active"]
