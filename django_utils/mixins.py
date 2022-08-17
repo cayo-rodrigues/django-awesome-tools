@@ -1,10 +1,14 @@
+"""
+This module provides useful mixins to be used in Django Rest Framework **generic views** and **viewsets**.
+"""
+
 from rest_framework.serializers import Serializer
 
 
 class SerializerByMethodMixin:
     """
     This mixin overrides the `get_serializer_class` method of generic views. It's
-    purpose is to dinamically define which serializer to use, depending of the request
+    purpose is to dinamically define which serializer to use, depending on the request
     method. For this to be possible, a new class property should be set, it is:
 
     - `method_serializers` -> It should be a dictionary having it's keys with the names
@@ -14,7 +18,12 @@ class SerializerByMethodMixin:
 
     Below is an example:
 
-    ```
+    ---
+
+    ```python
+
+    # views.py
+
     class MyBeautifulGenericView(SerializerByMethodMixin, ListCreateAPIView):
         queryset = MyWonderfulModel.objects.all()
         serializer_class = MyDefaultSerializer
@@ -33,7 +42,7 @@ class SerializerByMethodMixin:
 class SerializerByActionMixin:
     """
     This mixin overrides the `get_serializer_class` method of viewsets. It's
-    purpose is to dinamically define which serializer to use, depending of the viewset
+    purpose is to dinamically define which serializer to use, depending on the viewset
     action. For this to be possible, a new class property should be set, it is:
 
     - `action_serializers` -> It should be a dictionary having it's keys with the names
@@ -43,7 +52,12 @@ class SerializerByActionMixin:
 
     Below is an example:
 
-    ```
+    ---
+
+    ```python
+
+    # views.py
+
     class MyBeautifulViewSet(SerializerByActionMixin, ModelViewSet):
         queryset = MyWonderfulModel.objects.all()
         serializer_class = MyDefaultSerializer
@@ -64,10 +78,10 @@ class SerializerByActionMixin:
 class SerializerByDetailActionsMixin:
     """
     This mixin overrides the `get_serializer_class` method of viewsets. It's
-    purpose is to dinamically define which serializer to use, depending of the viewset
+    purpose is to dinamically define which serializer to use, depending on the viewset
     action. If it is a detail action, that is, one of `retrieve`, `update`, `partial_update`
     and `destroy`, then `self.detail_serializer_class` will be returned. Else, the default
-    `self.serializer_class` is returned. For this to be possible, a new class property should
+    `self.serializer_class` is used. For this to be possible, a new class property should
     be set, it is:
 
     - `detail_serializer_class` -> It's value should be a serializer class. This property defines
@@ -75,7 +89,12 @@ class SerializerByDetailActionsMixin:
 
     Below is an example:
 
-    ```
+    ---
+
+    ```python
+
+    # views.py
+
     class MyBeautifulViewSet(SerializerByDetailActionsMixin, ModelViewSet):
         queryset = MyWonderfulModel.objects.all()
         serializer_class = MyDefaultSerializer
@@ -97,24 +116,29 @@ class SerializerByDetailActionsMixin:
 class SerializerBySafeActionsMixin:
     """
     This mixin overrides the `get_serializer_class` method of viewsets. It's
-    purpose is to dinamically define which serializer to use, depending of the viewset
-    action. If it is a safe action`, then `self.safe_serializer_class` will be returned.
+    purpose is to dinamically define which serializer to use, depending on the viewset
+    action. If it is a _safe action_, then `self.safe_serializer_class` will be returned.
     Else, the default `self.serializer_class` is returned. A safe action is an action
     listed in the `safe_actions` class property. For this to be possible, a new class
     property should be set, it is:
 
-    - `safe_serializer_class` -> It's value should be a serializer class. This property defines
+    - `safe_serializer_class` -> Its value should be a serializer class. This property defines
     which serializer to use in safe actions.
 
     You can totally customize what is a "safe action". For that, you could change the value
     of `self.safe_actions`.
 
     - `safe_actions` -> It should be a `list[str]`, which each item representing a viewset action,
-    considered safe in your application for that viewset. The default value is `["list", "retrieve"]`
+    considered safe for that viewset. The default value is `["list", "retrieve"]`
 
     Below is an example:
 
-    ```
+    ---
+
+    ```python
+
+    # views.py
+
     class MyBeautifulViewSet(SerializerByDetailActionsMixin, ModelViewSet):
         queryset = MyWonderfulModel.objects.all()
         serializer_class = MyDefaultSerializer

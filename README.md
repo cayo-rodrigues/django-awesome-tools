@@ -290,6 +290,8 @@ considered safe for that viewset. The default value is `["list", "retrieve"]`
 Below is an example:
 
 ```python
+# views.py
+
 class MyBeautifulViewSet(SerializerByDetailActionsMixin, ModelViewSet):
     queryset = MyWonderfulModel.objects.all()
     serializer_class = MyDefaultSerializer

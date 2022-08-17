@@ -1,3 +1,8 @@
+"""
+This module provides a custom user manager as a shortcut whoever wants to customize django's
+authentication system for an email login instead of username login.
+"""
+
 from django.contrib.auth.models import BaseUserManager
 from django.core.exceptions import FieldDoesNotExist, ValidationError
 
@@ -5,12 +10,12 @@ from django.core.exceptions import FieldDoesNotExist, ValidationError
 class CustomUserManager(BaseUserManager):
     """
     A custom user manager that inherits from `django.contrib.auth.models.BaseUserManager`.
-    It's purpouse in life is mainly to provide an easy and simple way to implement a login
+    Its purpouse in life is mainly to provide an easy and simple way to implement a login
     and register system that expects `email` and `password` fields, instead of `username`
     and `password` fields.
 
-    But what if you desired to customize your users in a way that other info is required?
-    No problem, this class is highly customizable. You could do all this overriding the
+    But what if you desired to customize your users in a way that other info is also required?
+    No problem, this class is highly customizable. You could do all this by overriding the
     `create` and `create_superuser` methods of `BaseUserManager`, but here all of this is
     handled for you.
 
@@ -22,30 +27,35 @@ class CustomUserManager(BaseUserManager):
     - `user_start_active` -> Defaults to `True`. Defines if a user account should start in
     active state. In cases where users have to confirm their account in some way before getting
     access, you may wish to set this property to `False`
-    - `super_is_staff` -> Defaults to `False`. Defines the starting staff status of newly
+    - `super_is_staff` -> Defaults to `True`. Defines the starting staff status of newly
     created superusers
     - `super_start_active` -> Defaults to `True`. Defines if a superuser account should start in
     active state. Usually you'll want this value to be `True`, but you're totally free to change
-    it, depending on the situation.
-    - `required_fields` -> Defaults to `[]`. It should be a `list` of `str`. This property defines
+    it, depending on your needs.
+    - `required_fields` -> Defaults to `[]`. It should be a `list[str]`. This property defines
     which fields are required to be provided upon user creation, besides `email` and `password`.
     The fields `is_staff`, `is_superuser` and `is_active` should also not be present in this list.
-    It is worth noting that all fields defined here, must also be defined in your user model.
+    It is worth noting that **all fields defined here, must also be defined in your user model**.
     Otherwise, a `ValidationError` is raised.
 
     Below is an example of how you may customize the behaviour of this class:
 
-    ```
-    from django.utils import timezone
+    ---
+
+    ```python
+
+    # managers.py
+
+    from django_utils.managers import CustomUserManager
 
     class MyOwnUserManager(CustomUserManager):
         user_start_active = False
         required_fields = ["first_name", "last_name"]
-        auto_required_fields = {
-            "created_at": timezone.now,
-            "updated_at": timezone.now,
-        }
     ```
+
+    ---
+
+    **Remember that when doing this, you have to manually set this manager in your user model**.
     """
 
     user_is_staff: bool = False

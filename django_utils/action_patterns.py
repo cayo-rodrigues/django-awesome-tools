@@ -5,7 +5,7 @@ but routers have some limits. They can only go to a certain depth in producing u
 For instance, let's imagine a simple application, where you have Bands and Albums.
 In case you wish to list all Albums of a Band, you could make a request to an enpoint
 like `/bands/<band_id>/albums/`. That's totally possible with routers. But what if you
-want a detali route for an Album of a Band? A route like `/bands/<band_id>/albums/<album_id>/`
+want a detail route for an Album of a Band? A route like `/bands/<band_id>/albums/<album_id>/`
 would make sense, right? But routers aren't able to go to such an extent. And you could
 totally imagine bigger urls in real, bigger applications.
 
@@ -19,9 +19,28 @@ standard viewset actions mapped to their corresponding http method. Of course, y
 actions, customized according to your own needs. In this case, you can config them on your own. But
 the standard ones are all set here.
 
-But routers are really cool and so simple to use. So a very good alternative is [drf-nested-routers](https://github.com/alanjds/drf-nested-routers) ptyhon library.
+But routers are still so cool and so simple to use. So a very good alternative is [drf-nested-routers](https://github.com/alanjds/drf-nested-routers).
 It really makes it easier to deal with all of this. The `drf-nested-routers` library is designed to
 solve exactly this problem, and even more.
+
+Usage example:
+
+```python
+# urls.py
+
+from django.urls import path
+from django_utils.action_patterns import STANDARD_DETAIL_PATTERN, STANDARD_PATTERN
+
+from . import views
+
+cinema_view = views.CinemaViewSet.as_view(STANDARD_PATTERN)
+cinema_detail_view = views.CinemaViewSet.as_view(STANDARD_DETAIL_PATTERN)
+
+urlpatterns = [
+    path("", cinema_view),
+    path("<cinema_id>/", cinema_detail_view),
+]
+```
 """
 
 LIST_PATTERN = {"get": "list"}
