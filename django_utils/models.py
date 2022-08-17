@@ -40,10 +40,9 @@ class CustomAbstractUser(AbstractUser):
     """
 
     email = EmailField(unique=True)
-
     username = None
 
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
-
     objects = CustomUserManager()
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = objects.required_fields

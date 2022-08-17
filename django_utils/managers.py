@@ -32,10 +32,6 @@ class CustomUserManager(BaseUserManager):
     The fields `is_staff`, `is_superuser` and `is_active` should also not be present in this list.
     It is worth noting that all fields defined here, must also be defined in your user model.
     Otherwise, a `ValidationError` is raised.
-    - `auto_required_fields` -> Defaults to `{}`. It should be a `dict[str, function]`. This property
-    also defines which fields are required upon user creation, but having default values. These default
-    values are determined by the return of a function. This comes in handy specially when you want to
-    have a field with a date, for instance.
 
     Below is an example of how you may customize the behaviour of this class:
 
@@ -59,7 +55,6 @@ class CustomUserManager(BaseUserManager):
     super_start_active: bool = True
 
     required_fields: list[str] = []
-    auto_required_fields: dict[str] = {}
 
     def create(self, email: str, password: str, **extra_fields):
         FORBIDDEN_FIELDS = ["email", "password", "is_staff", "is_superuser", "is_active"]
@@ -77,9 +72,6 @@ class CustomUserManager(BaseUserManager):
                 raise ValidationError(f"Field {field} does not exist in {self.model}")
             except KeyError:
                 raise ValidationError(f"Missing {field} field")
-
-        for field, value in self.auto_required_fields.items():
-            required_values.update({field: value()})
 
         user = self.model(
             email=email.lower(),

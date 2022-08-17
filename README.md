@@ -192,6 +192,219 @@ videos having their `movie` foreign key equal to `None`.
 I highly encorage you to have a quick look at the source code, it's quite a simple concept.
 
 
+## `mixins.py`
+
+This module provides useful mixins to be used in Django Rest Framework **generic views** and **viewsets**.
+
+### `SerializerByMethodMixin`
+
+This mixin overrides the `get_serializer_class` method of generic views. It's
+purpose is to dinamically define which serializer to use, depending on the request
+method. For this to be possible, a new class property should be set, it is:
+
+- `method_serializers` -> It should be a dictionary having it's keys with the names
+of http methods and values as the serializer classes corresponding to each method.
+If the request method does not match any of the dict keys, it will return the value
+of `self.serializer_class`.
+
+Below is an example:
+
+```python
+# views.py
+
+class MyBeautifulGenericView(SerializerByMethodMixin, ListCreateAPIView):
+    queryset = MyWonderfulModel.objects.all()
+    serializer_class = MyDefaultSerializer
+    method_serializers = {
+        "GET": MySerialzerToUseInGetRequests,
+    }
+```
+
+### `SerializerByActionMixin`
+
+This mixin overrides the `get_serializer_class` method of viewsets. It's
+purpose is to dinamically define which serializer to use, depending on the viewset
+action. For this to be possible, a new class property should be set, it is:
+
+- `action_serializers` -> It should be a dictionary having it's keys with the names
+of viewset actions and values as the serializer classes corresponding to each action.
+If the viewset action does not match any of the dict keys, it will return the value
+of `self.serializer_class`.
+
+Below is an example:
+
+```python
+# views.py
+
+class MyBeautifulViewSet(SerializerByActionMixin, ModelViewSet):
+    queryset = MyWonderfulModel.objects.all()
+    serializer_class = MyDefaultSerializer
+    action_serializers = {
+        "create": MySerializerToUseInCreateActions,
+        "update": MySerialzerToUseInUpdateActions,
+        "partial_update": MySerialzerToUseInPartialUpdateActions,
+    }
+```
+
+### `SerializerByDetailActionsMixin`
+
+This mixin overrides the `get_serializer_class` method of viewsets. It's
+purpose is to dinamically define which serializer to use, depending on the viewset
+action. If it is a detail action, that is, one of `retrieve`, `update`, `partial_update`
+and `destroy`, then `self.detail_serializer_class` will be returned. Else, the default
+`self.serializer_class` is used. For this to be possible, a new class property should
+be set, it is:
+
+- `detail_serializer_class` -> It's value should be a serializer class. This property defines
+which serializer to use in detail actions.
+
+Below is an example:
+
+```python
+# views.py
+
+class MyBeautifulViewSet(SerializerByDetailActionsMixin, ModelViewSet):
+    queryset = MyWonderfulModel.objects.all()
+    serializer_class = MyDefaultSerializer
+    detail_serializer_class = MyDetailSerializer
+```
+
+### `SerializerBySafeActionsMixin`
+
+This mixin overrides the `get_serializer_class` method of viewsets. It's
+purpose is to dinamically define which serializer to use, depending on the viewset
+action. If it is a _safe action_, then `self.safe_serializer_class` will be returned.
+Else, the default `self.serializer_class` is returned. A safe action is an action
+listed in the `safe_actions` class property. For this to be possible, a new class
+property should be set, it is:
+
+- `safe_serializer_class` -> Its value should be a serializer class. This property defines
+which serializer to use in safe actions.
+
+You can totally customize what is a "safe action". For that, you could change the value
+of `self.safe_actions`.
+
+- `safe_actions` -> It should be a `list[str]`, which each item representing a viewset action,
+considered safe for that viewset. The default value is `["list", "retrieve"]`
+
+Below is an example:
+
+```python
+class MyBeautifulViewSet(SerializerByDetailActionsMixin, ModelViewSet):
+    queryset = MyWonderfulModel.objects.all()
+    serializer_class = MyDefaultSerializer
+    safe_serializer_class = MySafeSerializer
+```
+
+## `managers.py`
+
+This module provides a custom user manager as a shortcut whoever wants to customize django's
+authentication system for an email login instead of username login.
+
+### `CustomUserManager`
+
+A custom user manager that inherits from `django.contrib.auth.models.BaseUserManager`.
+Its purpouse in life is mainly to provide an easy and simple way to implement a login
+and register system that expects `email` and `password` fields, instead of `username`
+and `password` fields.
+
+But what if you desired to customize your users in a way that other info is also required?
+No problem, this class is highly customizable. You could do all this by overriding the
+`create` and `create_superuser` methods of `BaseUserManager`, but here all of this is
+handled for you.
+
+Besides that, you can define a class that inherits from `CustomUserManager` and set some
+class properties at your will. They work as follows:
+
+- `user_is_staff` -> Defaults to `False`. Defines the starting staff status of newly
+created users
+- `user_start_active` -> Defaults to `True`. Defines if a user account should start in
+active state. In cases where users have to confirm their account in some way before getting
+access, you may wish to set this property to `False`
+- `super_is_staff` -> Defaults to `True`. Defines the starting staff status of newly
+created superusers
+- `super_start_active` -> Defaults to `True`. Defines if a superuser account should start in
+active state. Usually you'll want this value to be `True`, but you're totally free to change
+it, depending on your needs.
+- `required_fields` -> Defaults to `[]`. It should be a `list[str]`. This property defines
+which fields are required to be provided upon user creation, besides `email` and `password`.
+The fields `is_staff`, `is_superuser` and `is_active` should also not be present in this list.
+It is worth noting that **all fields defined here, must also be defined in your user model**.
+Otherwise, a `ValidationError` is raised.
+
+Below is an example of how you may customize the behaviour of this class:
+
+```python
+# managers.py
+
+from django_utils.managers import CustomUserManager
+
+class MyOwnUserManager(CustomUserManager):
+    user_start_active = False
+    required_fields = ["first_name", "last_name"]
+```
+
+**Remember that when doing this, you have to manually set this manager in your user model**.
+
+
+## `models.py`
+
+This module provides a custom user model with some boilerplate simple configurations that
+are needed when customizing authentication system to accept email instead of username.
+
+### `CustomAbstractUser`
+
+A custom user model that inherits from `django.contrib.auth.models.AbstractUser`.
+Its purpose in life is to provide a shortcut for some configurations that are
+needed when changing authentication system from `username/password` to `email/password`.
+
+There are some properties that it sets with default values. They are:
+
+- `email` -> Defaults to `django.db.models.EmailField(unique=True)`. This property overrides
+the default email property that comes from `AbstractUser`, setting the unique constraint to
+`True`. This is necessary, since the email will be used for login.
+- `username` -> Defaults to `None`. This essencially discards the `username` column. If
+you want to still have a username field, but continue to use the `email` for login, no
+problem, you can just override this property.
+- `USERNAME_FIELD` -> Defaults to `"email"`. This property defines which field should be
+required for login (besides `password`, of course). Highly recommend you not to change this.
+- `REQUIRED_FIELDS` -> Defaults to `objects.required_fields`. This property defines which
+fields are required when creating a superuser via terminal, besides the `USERNAME_FIELD`
+and `password`, of course. Highly recommend you not to change it, since it automatically picks
+the values defined in the `required_fields` property of the manager class.
+- `objects` -> Defaults to `CustomUserManager()`. Defines what manager class should be used
+with the model. **In case you created a manager class that inherits from `CustomUserManager`**,
+**customizing it to your own needs, you should set this new class of yours here instead**.
+
+Below is an example of how you might go about using this class:
+
+```python
+# managers.py
+
+class MyOwnUserManager(CustomUserManager):
+    user_start_active = False
+    required_fields = ["first_name", "last_name"]
+```
+
+```python
+# models.py
+
+from django.db import models
+from django_utils.models import CustomAbstractUser
+
+from .managers import MyOwnUserManager
+
+
+class MyOwnUserModel(CustomAbstractUser):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    date_joined = None
+
+    objects = MyOwnUserManager()
+```
+
+
 ## `action_patterns.py`
 
 Viewsets have the advantage of abstracting away the work of defining routes explicitly,
@@ -217,3 +430,22 @@ the standard ones are all set here.
 But routers are still so cool and so simple to use. So a very good alternative is [drf-nested-routers](https://github.com/alanjds/drf-nested-routers).
 It really makes it easier to deal with all of this. The `drf-nested-routers` library is designed to
 solve exactly this problem, and even more.
+
+Usage example:
+
+```python
+# urls.py
+
+from django.urls import path
+from django_utils.action_patterns import STANDARD_DETAIL_PATTERN, STANDARD_PATTERN
+
+from . import views
+
+cinema_view = views.CinemaViewSet.as_view(STANDARD_PATTERN)
+cinema_detail_view = views.CinemaViewSet.as_view(STANDARD_DETAIL_PATTERN)
+
+urlpatterns = [
+    path("", cinema_view),
+    path("<cinema_id>/", cinema_detail_view),
+]
+```
