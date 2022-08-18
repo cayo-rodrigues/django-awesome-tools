@@ -1,12 +1,12 @@
 Metadata-Version: 2.1
-Name: django-utils
+Name: dj-drf-utils
 Version: 1.0.0.dev0
 Summary: Useful functions and classes for Django and Django Rest Framework
 Home-page: https://github.com/cayo-rodrigues/django-utils
 Author: Cayo Rodrigues
 Author-email: cayo.rodrigues1914@gmail.com
 License: MIT
-Keywords: django utils serializers generic views viewsets mixins email login model manager custom action shortcut error
+Keywords: django utils serializers generic views viewsets mixins email login model manager custom action shortcut error simple
 Requires-Python: >=3.8
 Description-Content-Type: text/markdown
 License-File: LICENSE.txt
