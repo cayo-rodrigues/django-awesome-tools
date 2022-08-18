@@ -139,7 +139,7 @@ class SerializerBySafeActionsMixin:
 
     # views.py
 
-    class MyBeautifulViewSet(SerializerByDetailActionsMixin, ModelViewSet):
+    class MyBeautifulViewSet(SerializerBySafeActionsMixin, ModelViewSet):
         queryset = MyWonderfulModel.objects.all()
         serializer_class = MyDefaultSerializer
         safe_serializer_class = MySafeSerializer

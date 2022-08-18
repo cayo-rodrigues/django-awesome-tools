@@ -2,7 +2,7 @@
 
 This package provides useful functions and classes to be used in [Django]() projects, specially when working with [Django Rest Framework](). Below are some further explation about how to use this package and what each module inside it does.
 
-The examples on this documentation are about a movies and cinemas, having entities like `Movie`, `Cinema`, `Room`, and `MovieSession`.
+The examples on this documentation are about movies and cinemas, having entities like `Movie`, `Cinema`, `Room`, and `MovieSession`.
 
 ## Installation
 
@@ -47,6 +47,9 @@ For instance, in case you want to get a `Room` of a `Cinema`:
 ```python
 # exceptions.py
 
+from rest_framework.exceptions import APIException, status
+
+
 class CinemaNotFoundError(APIException):
     status_code = status.HTTP_404_NOT_FOUND
     default_detail = "Cinema not found"
@@ -65,6 +68,9 @@ class RoomNotFoundError(APIException):
 
 ```python
 # views.py
+
+from django_utils.helpers import get_object_or_error
+
 
 cinema = get_object_or_error(Cinema, CinemaNotFoundError, pk=self.kwargs['cinema_id'])
 room = get_object_or_error(Room, RoomNotFoundError, pk=self.kwargs['room_id'], cinema=cinema)
@@ -101,6 +107,9 @@ For instance, in case you want to list all `MovieSession`s of a `Room` in a `Cin
 ```python
 # exceptions.py
 
+from rest_framework.exceptions import APIException, status
+
+
 class NoMovieSessionsError(APIException):
     status_code = status.HTTP_404_NOT_FOUND
     default_detail = "This room has no scheduled movie sessions"
@@ -114,6 +123,9 @@ class NoMovieSessionsError(APIException):
 
 ```python
 # views.py
+
+from django_utils.helpers import get_object_or_error, get_list_or_error
+
 
 cinema = get_object_or_error(Cinema, CinemaNotFoundError, pk=self.kwargs['cinema_id'])
 room = get_object_or_error(Room, RoomNotFoundError, pk=self.kwargs['room_id'], cinema=cinema)
@@ -161,6 +173,9 @@ class Video(models.Model):
 
 ```python
 # serializers.py
+
+from django_utils.helpers import set_and_destroy
+
 
 class MovieSerializer(serializers.ModelSerializer):
     ...
@@ -212,6 +227,9 @@ Below is an example:
 ```python
 # views.py
 
+from django_utils.mixins import SerializerByMethodMixin
+
+
 class MyBeautifulGenericView(SerializerByMethodMixin, ListCreateAPIView):
     queryset = MyWonderfulModel.objects.all()
     serializer_class = MyDefaultSerializer
@@ -235,6 +253,9 @@ Below is an example:
 
 ```python
 # views.py
+
+from django_utils.mixins import SerializerByActionMixin
+
 
 class MyBeautifulViewSet(SerializerByActionMixin, ModelViewSet):
     queryset = MyWonderfulModel.objects.all()
@@ -262,6 +283,9 @@ Below is an example:
 
 ```python
 # views.py
+
+from django_utils.mixins import SerializerByDetailActionsMixin
+
 
 class MyBeautifulViewSet(SerializerByDetailActionsMixin, ModelViewSet):
     queryset = MyWonderfulModel.objects.all()
@@ -292,7 +316,10 @@ Below is an example:
 ```python
 # views.py
 
-class MyBeautifulViewSet(SerializerByDetailActionsMixin, ModelViewSet):
+from django_utils.mixins import SerializerBySafeActionsMixin
+
+
+class MyBeautifulViewSet(SerializerBySafeActionsMixin, ModelViewSet):
     queryset = MyWonderfulModel.objects.all()
     serializer_class = MyDefaultSerializer
     safe_serializer_class = MySafeSerializer
@@ -341,6 +368,7 @@ Below is an example of how you may customize the behaviour of this class:
 
 from django_utils.managers import CustomUserManager
 
+
 class MyOwnUserManager(CustomUserManager):
     user_start_active = False
     required_fields = ["first_name", "last_name"]
@@ -382,6 +410,9 @@ Below is an example of how you might go about using this class:
 
 ```python
 # managers.py
+
+from django_utils.managers import CustomUserManager
+
 
 class MyOwnUserManager(CustomUserManager):
     user_start_active = False
@@ -442,6 +473,7 @@ from django.urls import path
 from django_utils.action_patterns import STANDARD_DETAIL_PATTERN, STANDARD_PATTERN
 
 from . import views
+
 
 cinema_view = views.CinemaViewSet.as_view(STANDARD_PATTERN)
 cinema_detail_view = views.CinemaViewSet.as_view(STANDARD_DETAIL_PATTERN)
