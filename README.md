@@ -1,4 +1,4 @@
-# django-utils
+# dj-drf-utils
 
 This package provides useful functions and classes to be used in [Django]() projects, specially when working with [Django Rest Framework](). Below are some further explation about how to use this package and what each module inside it does.
 
@@ -9,7 +9,7 @@ The examples on this documentation are about movies and cinemas, having entities
 First, run:
 
 ```bash
-pip install django-utils
+pip install dj-drf-utils
 ```
 
 Then, in your `INSTALLED_APPS`, register the `dj_drf_utils` app:
