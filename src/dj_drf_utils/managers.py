@@ -46,7 +46,7 @@ class CustomUserManager(BaseUserManager):
 
     # managers.py
 
-    from django_utils.managers import CustomUserManager
+    from dj_drf_utils.managers import CustomUserManager
 
     class MyOwnUserManager(CustomUserManager):
         user_start_active = False

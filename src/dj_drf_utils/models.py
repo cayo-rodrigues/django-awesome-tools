@@ -53,7 +53,7 @@ class CustomAbstractUser(AbstractUser):
     # models.py
 
     from django.db import models
-    from django_utils.models import CustomAbstractUser
+    from dj_drf_utils.models import CustomAbstractUser
 
     from .managers import MyOwnUserManager
 

@@ -12,11 +12,11 @@ First, run:
 pip install django-utils
 ```
 
-Then, in your `INSTALLED_APPS`, register the `django_utils` app:
+Then, in your `INSTALLED_APPS`, register the `dj_drf_utils` app:
 
 ```python
 INSTALLED_APPS = [
-  "django_utils",
+  "dj_drf_utils",
   ...
 ]
 ```
@@ -69,7 +69,7 @@ class RoomNotFoundError(APIException):
 ```python
 # views.py
 
-from django_utils.helpers import get_object_or_error
+from dj_drf_utils.helpers import get_object_or_error
 
 
 cinema = get_object_or_error(Cinema, CinemaNotFoundError, pk=self.kwargs['cinema_id'])
@@ -124,7 +124,7 @@ class NoMovieSessionsError(APIException):
 ```python
 # views.py
 
-from django_utils.helpers import get_object_or_error, get_list_or_error
+from dj_drf_utils.helpers import get_object_or_error, get_list_or_error
 
 
 cinema = get_object_or_error(Cinema, CinemaNotFoundError, pk=self.kwargs['cinema_id'])
@@ -174,7 +174,7 @@ class Video(models.Model):
 ```python
 # serializers.py
 
-from django_utils.helpers import set_and_destroy
+from dj_drf_utils.helpers import set_and_destroy
 
 
 class MovieSerializer(serializers.ModelSerializer):
@@ -227,7 +227,7 @@ Below is an example:
 ```python
 # views.py
 
-from django_utils.mixins import SerializerByMethodMixin
+from dj_drf_utils.mixins import SerializerByMethodMixin
 
 
 class MyBeautifulGenericView(SerializerByMethodMixin, ListCreateAPIView):
@@ -254,7 +254,7 @@ Below is an example:
 ```python
 # views.py
 
-from django_utils.mixins import SerializerByActionMixin
+from dj_drf_utils.mixins import SerializerByActionMixin
 
 
 class MyBeautifulViewSet(SerializerByActionMixin, ModelViewSet):
@@ -284,7 +284,7 @@ Below is an example:
 ```python
 # views.py
 
-from django_utils.mixins import SerializerByDetailActionsMixin
+from dj_drf_utils.mixins import SerializerByDetailActionsMixin
 
 
 class MyBeautifulViewSet(SerializerByDetailActionsMixin, ModelViewSet):
@@ -316,7 +316,7 @@ Below is an example:
 ```python
 # views.py
 
-from django_utils.mixins import SerializerBySafeActionsMixin
+from dj_drf_utils.mixins import SerializerBySafeActionsMixin
 
 
 class MyBeautifulViewSet(SerializerBySafeActionsMixin, ModelViewSet):
@@ -366,7 +366,7 @@ Below is an example of how you may customize the behaviour of this class:
 ```python
 # managers.py
 
-from django_utils.managers import CustomUserManager
+from dj_drf_utils.managers import CustomUserManager
 
 
 class MyOwnUserManager(CustomUserManager):
@@ -411,7 +411,7 @@ Below is an example of how you might go about using this class:
 ```python
 # managers.py
 
-from django_utils.managers import CustomUserManager
+from dj_drf_utils.managers import CustomUserManager
 
 
 class MyOwnUserManager(CustomUserManager):
@@ -423,7 +423,7 @@ class MyOwnUserManager(CustomUserManager):
 # models.py
 
 from django.db import models
-from django_utils.models import CustomAbstractUser
+from dj_drf_utils.models import CustomAbstractUser
 
 from .managers import MyOwnUserManager
 
@@ -470,7 +470,7 @@ Usage example:
 # urls.py
 
 from django.urls import path
-from django_utils.action_patterns import STANDARD_DETAIL_PATTERN, STANDARD_PATTERN
+from dj_drf_utils.action_patterns import STANDARD_DETAIL_PATTERN, STANDARD_PATTERN
 
 from . import views
 
