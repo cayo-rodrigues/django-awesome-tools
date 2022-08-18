@@ -16,7 +16,7 @@ setup(
     author_email="cayo.rodrigues1914@gmail.com",
     license="MIT",
     keywords="django utils serializers generic views viewsets mixins email login model manager custom action shortcut error",
-    packages=find_packages(include=["django_utils", "django_utils.*"]),
+    packages=find_packages(include=["src", "src.*"]),
     install_requires=["djangorestframework"],
     python_requires=">=3.8",
 )
