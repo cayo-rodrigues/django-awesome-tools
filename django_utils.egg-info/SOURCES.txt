@@ -1,0 +1,16 @@
+LICENSE.txt
+README.md
+setup.cfg
+setup.py
+django_utils.egg-info/PKG-INFO
+django_utils.egg-info/SOURCES.txt
+django_utils.egg-info/dependency_links.txt
+django_utils.egg-info/requires.txt
+django_utils.egg-info/top_level.txt
+src/__init__.py
+src/action_patterns.py
+src/helpers.py
+src/managers.py
+src/mixins.py
+src/models.py
+src/migrations/__init__.py
