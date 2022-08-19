@@ -12,15 +12,6 @@ First, run:
 pip install dj-drf-utils
 ```
 
-Then, in your `INSTALLED_APPS`, register the `dj_drf_utils` app:
-
-```python
-INSTALLED_APPS = [
-  "dj_drf_utils",
-  ...
-]
-```
-
 That's it!
 
 ## `helpers.py`
