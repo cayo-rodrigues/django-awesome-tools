@@ -19,11 +19,9 @@ standard viewset actions mapped to their corresponding http method. Of course, y
 actions, customized according to your own needs. In this case, you can config them on your own. But
 the standard ones are all set here.
 
-But routers are still so cool and so simple to use. So a very good alternative is [drf-nested-routers](https://github.com/alanjds/drf-nested-routers).
-It really makes it easier to deal with all of this. The `drf-nested-routers` library is designed to
-solve exactly this problem, and even more.
-
 Usage example:
+
+---
 
 ```python
 # urls.py
@@ -41,6 +39,12 @@ urlpatterns = [
     path("<cinema_id>/", cinema_detail_view),
 ]
 ```
+
+---
+
+But routers are still so cool and so simple to use. So a very good alternative is [drf-nested-routers](https://github.com/alanjds/drf-nested-routers).
+It really makes it easier to deal with all of this. The `drf-nested-routers` library is designed to
+solve exactly this problem, and even more.
 """
 
 LIST_PATTERN = {"get": "list"}

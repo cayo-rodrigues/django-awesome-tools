@@ -14,11 +14,11 @@ pip install dj-drf-utils
 
 That's it!
 
-## `helpers.py`
+## helpers.py
 
 This module provides three useful functions. Two of them are a more powerful and versatille version of `get_object_or_404` and `get_list_or_404`, and the other is a handy shortcut.
 
-### `get_object_or_error`
+### get_object_or_error
 
 Almost the same as `django.shortcuts.get_object_or_404`, but can raise any
 custom error class you want, allowing you to return more precise error messages.
@@ -73,8 +73,9 @@ more than one lookup field, `get_object_or_error` makes much clearer what is the
 
 I highly encorage you to have a quick look at the source code, it's quite a simple concept.
 
+---
 
-### `get_list_or_error`
+### get_list_or_error
 
 Almost the same as `django.shortcuts.get_list_or_404`, but can raise any
 custom error class you want, allowing you to return more precise error messages.
@@ -125,10 +126,11 @@ movie_sessions = get_list_or_error(MovieSession, NoMovieSessionsError, room=room
 
 I highly encorage you to have a quick look at the source code, it's quite a simple concept.
 
+---
 
-### `set_and_destroy`
+### set_and_destroy
 
-This function basically sets a new list of values in of a foreign key field and erases any
+This function basically sets a new list of values in a foreign key field and erases any
 previous values that were related to `klass`. For it to work, **you must set `null=True`
 in your model**, otherwise, the values will not be subsitituted, they will only be added.
 It accepts the following parameters:
@@ -198,11 +200,11 @@ videos having their `movie` foreign key equal to `None`.
 I highly encorage you to have a quick look at the source code, it's quite a simple concept.
 
 
-## `mixins.py`
+## mixins.py
 
 This module provides useful mixins to be used in Django Rest Framework **generic views** and **viewsets**.
 
-### `SerializerByMethodMixin`
+### SerializerByMethodMixin
 
 This mixin overrides the `get_serializer_class` method of generic views. It's
 purpose is to dinamically define which serializer to use, depending on the request
@@ -229,7 +231,9 @@ class MyBeautifulGenericView(SerializerByMethodMixin, ListCreateAPIView):
     }
 ```
 
-### `SerializerByActionMixin`
+---
+
+### SerializerByActionMixin
 
 This mixin overrides the `get_serializer_class` method of viewsets. It's
 purpose is to dinamically define which serializer to use, depending on the viewset
@@ -258,7 +262,9 @@ class MyBeautifulViewSet(SerializerByActionMixin, ModelViewSet):
     }
 ```
 
-### `SerializerByDetailActionsMixin`
+---
+
+### SerializerByDetailActionsMixin
 
 This mixin overrides the `get_serializer_class` method of viewsets. It's
 purpose is to dinamically define which serializer to use, depending on the viewset
@@ -284,7 +290,9 @@ class MyBeautifulViewSet(SerializerByDetailActionsMixin, ModelViewSet):
     detail_serializer_class = MyDetailSerializer
 ```
 
-### `SerializerBySafeActionsMixin`
+---
+
+### SerializerBySafeActionsMixin
 
 This mixin overrides the `get_serializer_class` method of viewsets. It's
 purpose is to dinamically define which serializer to use, depending on the viewset
@@ -316,13 +324,13 @@ class MyBeautifulViewSet(SerializerBySafeActionsMixin, ModelViewSet):
     safe_serializer_class = MySafeSerializer
 ```
 
-## `managers.py`
+## managers.py
 
 This module provides a custom user manager as a shortcut for whoever wants to customize
 django's authentication system to use a different field instead of username for login.
 It can be really anything, like email, phone, cpf, etc.
 
-### `CustomUserManager`
+### CustomUserManager
 
 A custom user manager that inherits from `django.contrib.auth.models.BaseUserManager`.
 Its purpouse in life is mainly to provide an easy and simple way to implement a login
@@ -400,7 +408,7 @@ above we are droping the `username` column, but that's not necessary if you stil
 in your user model.
 
 
-## `action_patterns.py`
+## action_patterns.py
 
 Viewsets have the advantage of abstracting away the work of defining routes explicitly,
 but routers have some limits. They can only go to a certain depth in producing urls.
@@ -422,10 +430,6 @@ standard viewset actions mapped to their corresponding http method. Of course, y
 actions, customized according to your own needs. In this case, you can config them on your own. But
 the standard ones are all set here.
 
-But routers are still so cool and so simple to use. So a very good alternative is [drf-nested-routers](https://github.com/alanjds/drf-nested-routers).
-It really makes it easier to deal with all of this. The `drf-nested-routers` library is designed to
-solve exactly this problem, and even more.
-
 Usage example:
 
 ```python
@@ -445,3 +449,7 @@ urlpatterns = [
     path("<cinema_id>/", cinema_detail_view),
 ]
 ```
+
+But routers are still so cool and so simple to use. So a very good alternative is [drf-nested-routers](https://github.com/alanjds/drf-nested-routers).
+It really makes it easier to deal with all of this. The `drf-nested-routers` library is designed to
+solve exactly this problem, and even more.
