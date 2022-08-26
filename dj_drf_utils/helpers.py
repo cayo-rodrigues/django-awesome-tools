@@ -9,6 +9,106 @@ from django.http import Http404
 from rest_framework.exceptions import APIException
 
 
+def bulk_get_or_create(
+    klass: Model, values: list[dict], only_create: bool = False, **kwargs
+):
+    """
+    Despite the name of this function, it does not translate into a single database hit,
+    unfortunatelly. But it is still better than a loop executing `Model.objects.get_or_create`
+    in every iteration.
+
+    That's because this function **combines filters and the bulk_create method**.
+    Django querysets are lazy, but in this function they are evaluated on every iteration.
+    However, in the end **only one** `INSERT` query is performed.
+
+    ---
+
+    #### Important!
+    Django's `Model.objects.bulk_create` method returns a list of newly created instances **without ids**
+    when working with SQLite. Please, make sure to use PostgreSQL to avoid problems.
+
+    ---
+
+    It expects the following parameters:
+
+    - `klass` -> The model whose values will be retrieved or created
+    - `values` -> A list of dictionaries having key value pairs demanded by `klass`
+    - `only_create` -> A boolean value. Defaults to `False`. In case you don't care about getting
+    existing values, and just wants to create them, then you can set this arguments to `True`. It
+    will result in just one database hit.
+    - `kwargs` -> Key value pairs with extra fields you want to use for filtering/creating instances
+    of `klass`. It can be useful for foreign key fields
+
+    Usage example:
+
+    ---
+
+    ```python
+
+    # serializers.py
+
+    from dj_drf_utils.helpers import bulk_get_or_create, set_and_destroy
+
+
+    class MovieSerializer(serializers.ModelSerializer):
+        # ...
+
+        def create(self, validated_data: dict) -> Movie:
+            # ...
+
+            videos_data = validated_data.pop("videos")
+
+            # ...
+
+            bulk_get_or_create(Video, videos_data, movie=movie)
+
+            # ...
+
+        def update(self, instance: Movie, validated_data: dict) -> Movie:
+            # ...
+
+            videos = validated_data.pop("videos", None)
+
+            # ...
+
+            if videos:
+                set_and_destroy(
+                    klass=instance,
+                    attr="videos",
+                    value=bulk_get_or_create(Video, videos, movie=instance),
+                    related_klass=Video,
+                    movie=None,
+                )
+
+            # ...
+    ```
+
+    ---
+
+    Note that in the `update` method, we are combining `set_and_destroy` with `bulk_get_or_create`.
+    That's totally a thing.
+
+    I highly encourage you to have a look at the source code, so that you can better understand what's
+    happening under the hood. It's not complicated.
+    """
+
+    instances_to_create = []
+    existing_instances = []
+
+    for value in values:
+        if only_create:
+            instances_to_create.append(klass(**value, **kwargs))
+            continue
+
+        match = klass.objects.filter(**value, **kwargs).first()
+        if match:
+            existing_instances.append(match)
+        else:
+            instances_to_create.append(klass(**value, **kwargs))
+
+    return klass.objects.bulk_create(instances_to_create) + existing_instances
+
+
 def get_object_or_error(klass: Model, exception: APIException = Http404, **kwargs):
     """
     Almost the same as `django.shortcuts.get_object_or_404`, but can raise any
