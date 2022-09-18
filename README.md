@@ -530,3 +530,56 @@ urlpatterns = [
 But routers are still so cool and so simple to use. So a very good alternative is [drf-nested-routers](https://github.com/alanjds/drf-nested-routers).
 It really makes it easier to deal with all of this. The `drf-nested-routers` library is designed to
 solve exactly this problem, and even more.
+
+
+## admin.py
+
+This module provides a `CustomUserAdmin` class. It inherits from `django.contrib.auth.admin.UserAdmin`.
+Have you ever created a custom user model, added it to admin and then realized that your users passwords
+were being created unhashed? Then you searched the internet and found out that django provides a `UserAdmin`
+class that does the job. But what if you customized your authentication system, and you're using another
+field instead of `username`? In this case, it throws an error, saying that there is no `username` field.
+
+In order to make things easier, this module provides a class that abstracts away all the boring 
+configurations you would need to do.
+
+### CustomUserAdmin
+
+This class inherits from `django.contrib.auth.admin.UserAdmin`. It's purpose in life is to abstract
+away some boring configurations you may need, when you're using a custom user model. The advantage is
+to have the same features that Django standard `UserAdmin` class provides, but in a custom user model,
+having a field other than `username` used for authentication.
+
+This class automaticaly figures out what is your user model, as long as it is pointed to by `AUTH_USER_MODEL`
+setting in `settings.py`. Also, it takes the care of first checking for the fields you set in your user
+model before referencing them. But the **password field is mandatory**.
+
+Below is an usage example:
+
+```python
+# admin.py
+
+from dj_drf_utils.admin import CustomUserAdmin
+from .models import User
+
+admin.site.register(User, CustomUserAdmin)
+```
+
+In case you want to customize some kind of behaviour, you totally can, but you will have to overwrite the
+properties entirely. For instance, if you need to change the columns of `list_display`, you could do something
+like this:
+
+```python
+
+# admin.py
+
+from dj_drf_utils.admin import CustomUserAdmin
+from .models import User
+
+class MyOwnUserAdmin(CustomUserAdmin):
+    list_display = ['id', 'email', 'first_name', 'last_name', 'birth_date', 'is_staff', 'is_superuser']
+
+admin.site.register(User, MyOwnUserAdmin)
+```
+
+Not so bad.
