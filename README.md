@@ -1,5 +1,9 @@
-# Table of Contents
-- [Introduction](#dj-drf-utils)
+# dj-drf-utils
+
+This package provides useful functions and classes to be used in [Django](https://www.djangoproject.com/) projects, specially when working with [Django Rest Framework](https://www.django-rest-framework.org/). Below are some further explation about how to use this package and what each module inside it does.
+
+The examples on this documentation are about movies and cinemas, having entities like `Movie`, `Cinema`, `Room`, and `MovieSession`.
+
 - [Installation](#installation)
 - [helpers.py](#helperspy)
   - [get\_object\_or\_error](#get_object_or_error)
@@ -18,12 +22,6 @@
 - [admin.py](#adminpy)
   - [CustomUserAdmin](#customuseradmin)
 
-# dj-drf-utils
-
-This package provides useful functions and classes to be used in [Django](https://www.djangoproject.com/) projects, specially when working with [Django Rest Framework](https://www.django-rest-framework.org/). Below are some further explation about how to use this package and what each module inside it does.
-
-The examples on this documentation are about movies and cinemas, having entities like `Movie`, `Cinema`, `Room`, and `MovieSession`.
-
 ## Installation
 
 First, run:
@@ -33,6 +31,8 @@ pip install dj-drf-utils
 ```
 
 That's it!
+
+---
 
 ## helpers.py
 
@@ -93,7 +93,7 @@ more than one lookup field, `get_object_or_error` makes much clearer what is the
 
 I highly encorage you to have a quick look at the source code, it's quite a simple concept.
 
----
+##
 
 ### get_list_or_error
 
@@ -146,7 +146,7 @@ movie_sessions = get_list_or_error(MovieSession, NoMovieSessionsError, room=room
 
 I highly encorage you to have a quick look at the source code, it's quite a simple concept.
 
----
+##
 
 ### set_and_destroy
 
@@ -219,7 +219,7 @@ videos having their `movie` foreign key equal to `None`.
 
 I highly encorage you to have a quick look at the source code, it's quite a simple concept.
 
----
+##
 
 ### bulk_get_or_create
 
@@ -296,6 +296,7 @@ That's totally a thing.
 I highly encourage you to have a look at the source code, so that you can better understand what's
 happening under the hood. It's not complicated.
 
+---
 
 ## mixins.py
 
@@ -328,7 +329,7 @@ class MyBeautifulGenericView(SerializerByMethodMixin, ListCreateAPIView):
     }
 ```
 
----
+##
 
 ### SerializerByActionMixin
 
@@ -359,7 +360,7 @@ class MyBeautifulViewSet(SerializerByActionMixin, ModelViewSet):
     }
 ```
 
----
+##
 
 ### SerializerByDetailActionsMixin
 
@@ -386,6 +387,8 @@ class MyBeautifulViewSet(SerializerByDetailActionsMixin, ModelViewSet):
     serializer_class = MyDefaultSerializer
     detail_serializer_class = MyDetailSerializer
 ```
+
+##
 
 ### SerializerBySafeActionsMixin
 
@@ -418,6 +421,8 @@ class MyBeautifulViewSet(SerializerBySafeActionsMixin, ModelViewSet):
     serializer_class = MyDefaultSerializer
     safe_serializer_class = MySafeSerializer
 ```
+
+##
 
 ### FilterQuerysetMixin
 
@@ -584,6 +589,7 @@ superuser (it must not include the value defined for `USERNAME_FIELD` or `"passw
 above we are droping the `username` column, but that's not necessary if you still want to have a username
 in your user model.
 
+---
 
 ## action_patterns.py
 
@@ -631,6 +637,7 @@ But routers are still so cool and so simple to use. So a very good alternative i
 It really makes it easier to deal with all of this. The `drf-nested-routers` library is designed to
 solve exactly this problem, and even more.
 
+---
 
 ## admin.py
 
