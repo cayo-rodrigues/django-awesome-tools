@@ -15,7 +15,11 @@ setup(
     author="Cayo Rodrigues",
     author_email="cayo.rodrigues1914@gmail.com",
     license="MIT",
-    keywords="django utils serializers generic views viewsets mixins email login model manager custom action shortcut error simple rest framework dj drf admin hash password user",
+    keywords=(
+        "django utils serializers generic views viewsets mixins email login model"
+        "manager custom action shortcut error simple rest framework dj drf admin"
+        "hash password user filter queryset"
+    ),
     packages=find_packages(include=["dj_drf_utils", "dj_drf_utils.*"]),
     install_requires=["djangorestframework"],
     python_requires=">=3.8",

@@ -245,7 +245,7 @@ def get_list_or_error(
     try:
         result = klass.objects.filter(**kwargs)
     except (ValidationError, ValueError, FieldError):
-        raise error_klass
+        result = []
 
     if result or accept_empty:
         return result

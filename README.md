@@ -401,6 +401,90 @@ class MyBeautifulViewSet(SerializerBySafeActionsMixin, ModelViewSet):
     safe_serializer_class = MySafeSerializer
 ```
 
+### FilterQuerysetMixin
+
+This mixin overrides the `get_queryset` method of class based views. It's main goal is
+to make it easier and simpler to filter and/or narrow down results. You may use it to
+attach results to the logged in user, to filter the queryset by route params (or `kwargs`)
+and by query params.
+
+These are the class properties that this mixin accepts:
+
+- `user_key` -> A `str` representing which keyword argument should be used for filtering by
+user. The default is `None`, meaning that the queryset will not be filtered by the logged in user, that
+is, `self.request.user`. If in your queryset there is a `FK` pointing to your project's auth user model, then this property should
+have the same name as this `FK` field.
+- `filter_kwargs` -> A `dict[str, str]`, where the **key** represents the name of the **field** to be searched,
+and the **value** is the **url param**.
+- `filter_query_params` -> A `dict[str, str]`, where the **key** is the name of the **field** to be searched,
+and the **value** represents the **query param** received in the request.
+- `exception_klass` -> Should be an `exception` inheriting from `rest_framework.exceptions.APIException`. The
+default value is `django.http.Http404`. In case no value is returned or another kind of error occurs, this
+exception will be raised.
+- `accept_empty` -> A `bool`, which defaults to `True`. If `False`, then the `exception_klass` will be raised
+in case the results are empty. Otherwise, an empty value will be returned normaly.
+
+Below is an example of how this might be useful:
+
+---
+
+```python
+
+# request endpoint
+
+"/categories/<category_id>/transactions/"
+
+```
+
+```python
+
+# views.py
+
+from dj_drf_utils.mixins import FilterQuerysetMixin
+
+class TransactionView(FilterQuerysetMixin, ListCreateAPIView):
+    serializer_class = TransactionSerializer
+    permission_classes = [IsAuthenticated]
+    user_key = "user"
+    filter_kwargs = {"category": "category_id"}
+    filter_query_params = {
+        "month_id": "month_id",
+        "month__number": "month_number",
+        "month__name__icontains": "month_name",
+        "month__year": "year",
+        "description__icontains": "description",
+        "value": "value",
+        "value__gte": "value_gte",
+        "value__lte": "value_lte",
+        "is_income": "is_income",
+        "is_recurrent": "is_recurrent",
+        "installments": "installments",
+    }
+
+```
+
+---
+
+In the example above, we are defining a view for monetary transactions. We don't want
+users to see other user's transactions, so we attach all transactions to the logged in
+user. By using the `user_key` class property, we tell the mixin that when filtering the
+queryset, it should use `user=self.request.user`.
+
+Also, all transactions have categories. And we want them always to be listed by category.
+So in the url, we receive the `<category_id>` param. So that's why we declare `filter_kwargs`
+in that way.
+
+As for the `filter_query_params` property, please note how interesting it is. In the keys of
+the dictionary, we pass in the keys that will be used for filtering the queryset, just as if
+we were filtering the queryset manually. None of these query params are mandatory.
+
+We are not declaring `accept_empty`, which means that we will not raise `exception_klass` in any
+case. So that's why we don't need to define `exception_klass` too.
+
+You may have noticed that the `queryset` class property haven't been defined. That's not a
+problem, because this mixin guesses what is the apropriated model by accessing `self.serializer_class.Meta.model`.
+So as long as you define you model in that way, everything is OK.
+
 ## managers.py
 
 This module provides a custom user manager as a shortcut for whoever wants to customize
