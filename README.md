@@ -1,3 +1,23 @@
+# Table of Contents
+- [Introduction](#dj-drf-utils)
+- [Installation](#installation)
+- [helpers.py](#helperspy)
+  - [get\_object\_or\_error](#get_object_or_error)
+  - [get\_list\_or\_error](#get_list_or_error)
+  - [set\_and\_destroy](#set_and_destroy)
+  - [bulk\_get\_or\_create](#bulk_get_or_create)
+- [mixins.py](#mixinspy)
+  - [SerializerByMethodMixin](#serializerbymethodmixin)
+  - [SerializerByActionMixin](#serializerbyactionmixin)
+  - [SerializerByDetailActionsMixin](#serializerbydetailactionsmixin)
+  - [SerializerBySafeActionsMixin](#serializerbysafeactionsmixin)
+  - [FilterQuerysetMixin](#filterquerysetmixin)
+- [managers.py](#managerspy)
+  - [CustomUserManager](#customusermanager)
+- [action\_patterns.py](#action_patternspy)
+- [admin.py](#adminpy)
+  - [CustomUserAdmin](#customuseradmin)
+
 # dj-drf-utils
 
 This package provides useful functions and classes to be used in [Django](https://www.djangoproject.com/) projects, specially when working with [Django Rest Framework](https://www.django-rest-framework.org/). Below are some further explation about how to use this package and what each module inside it does.
@@ -215,7 +235,7 @@ However, in the end **only one** `INSERT` query is performed.
 
 #### Important!
 Django's `Model.objects.bulk_create` method returns a list of newly created instances **without ids**
-when working with SQLite. Please, make sure to use PostgreSQL to avoid problems.
+when working with _SQLite_. Please, make sure to use _PostgreSQL_ to avoid problems.
 
 ---
 
