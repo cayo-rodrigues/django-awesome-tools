@@ -40,9 +40,10 @@ class CustomUserAdmin(UserAdmin):
 
     ---
 
-    In case you want to customize some kind of behaviour, you totally can, but you will have to overwrite the
-    properties entirely. For instance, if you need to change the columns of `list_display`, you could do something
-    like this:
+    In case you want to customize some kind of behaviour, you totally can, either by overwriting the properties
+    entirely (by inheriting this class), or by using one of the class methods defined in this class. For instance,
+    if you added some columns that are not default of auth user model, but still want them to appear in the admin,
+    you could do something like this:
 
     ---
 
@@ -53,10 +54,16 @@ class CustomUserAdmin(UserAdmin):
     from dj_drf_utils.admin import CustomUserAdmin
     from .models import User
 
-    class MyOwnUserAdmin(CustomUserAdmin):
-        list_display = ['id', 'email', 'first_name', 'last_name', 'birth_date', 'is_staff', 'is_superuser']
+    fields = ("cpf", "phone")
 
-    admin.site.register(User, MyOwnUserAdmin)
+    # add fields to the user creation form
+    CustomUserAdmin.add_creation_fields(fields)
+    # append fields to list_display
+    CustomUserAdmin.add_list_display(fields)
+    # add fields to personal info screen
+    CustomUserAdmin.add_personal_info(fields)
+
+    admin.site.register(User, CustomUserAdmin)
     ```
 
     ---
@@ -122,3 +129,15 @@ class CustomUserAdmin(UserAdmin):
     )
     search_fields = search_fields_values
     ordering = (auth_user_class.USERNAME_FIELD,)
+
+    @classmethod
+    def add_creation_fields(cls, fields: tuple[str]):
+        cls.add_fieldsets[0][1]["fields"] += fields
+
+    @classmethod
+    def add_list_display(cls, fields: list[str]):
+        cls.list_display += fields
+
+    @classmethod
+    def add_personal_info(cls, fields: tuple[str]):
+        cls.fieldsets[1][1]["fields"] += fields

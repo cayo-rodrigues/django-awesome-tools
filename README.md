@@ -367,8 +367,6 @@ class MyBeautifulViewSet(SerializerByDetailActionsMixin, ModelViewSet):
     detail_serializer_class = MyDetailSerializer
 ```
 
----
-
 ### SerializerBySafeActionsMixin
 
 This mixin overrides the `get_serializer_class` method of viewsets. It's
@@ -426,8 +424,6 @@ in case the results are empty. Otherwise, an empty value will be returned normal
 
 Below is an example of how this might be useful:
 
----
-
 ```python
 
 # request endpoint
@@ -463,8 +459,6 @@ class TransactionView(FilterQuerysetMixin, ListCreateAPIView):
 
 ```
 
----
-
 In the example above, we are defining a view for monetary transactions. We don't want
 users to see other user's transactions, so we attach all transactions to the logged in
 user. By using the `user_key` class property, we tell the mixin that when filtering the
@@ -484,6 +478,8 @@ case. So that's why we don't need to define `exception_klass` too.
 You may have noticed that the `queryset` class property haven't been defined. That's not a
 problem, because this mixin guesses what is the apropriated model by accessing `self.serializer_class.Meta.model`.
 So as long as you define you model in that way, everything is OK.
+
+---
 
 ## managers.py
 
@@ -649,9 +645,10 @@ from .models import User
 admin.site.register(User, CustomUserAdmin)
 ```
 
-In case you want to customize some kind of behaviour, you totally can, but you will have to overwrite the
-properties entirely. For instance, if you need to change the columns of `list_display`, you could do something
-like this:
+In case you want to customize some kind of behaviour, you totally can, either by overwriting the properties
+entirely (by inheriting this class), or by using one of the class methods defined in this class. For instance,
+if you added some columns that are not default of auth user model, but still want them to appear in the admin,
+you could do something like this:
 
 ```python
 
@@ -660,10 +657,16 @@ like this:
 from dj_drf_utils.admin import CustomUserAdmin
 from .models import User
 
-class MyOwnUserAdmin(CustomUserAdmin):
-    list_display = ['id', 'email', 'first_name', 'last_name', 'birth_date', 'is_staff', 'is_superuser']
+fields = ("cpf", "phone")
 
-admin.site.register(User, MyOwnUserAdmin)
+# add fields to the user creation form
+CustomUserAdmin.add_creation_fields(fields)
+# append fields to list_display
+CustomUserAdmin.add_list_display(fields)
+# add fields to personal info screen
+CustomUserAdmin.add_personal_info(fields)
+
+admin.site.register(User, CustomUserAdmin)
 ```
 
 Not so bad.
