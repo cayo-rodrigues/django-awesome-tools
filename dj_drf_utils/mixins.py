@@ -285,6 +285,27 @@ class AttachUserOnCreateMixin:
     So in case you are already using this module's `FilterQuerysetMixin`, and is using this property, then there
     is no need to repeat yourself here. But in case neither `self.attach_user_key` or `self.filter_user_key` are
     found, then `"user"` is used by default.
+
+    Here is a quick example:
+
+    ```python
+
+    from dj_drf_utils.mixins import AttachUserOnCreateMixin
+    from rest_framework import generics
+    from rest_framework import permissions
+
+    from .serializers import CinemaSerializer
+
+    class CinemaView(AttachUserOnCreateMixin, generics.ListCreateAPIView):
+        serializer_class = CinemaSerializer
+        permission_classes = [permissions.IsAuthenticated]
+        attach_user_key = "owner"
+
+    ```
+
+    This simple trick makes it possible to attach an user to a `Cinema` instance very easily. In this case, we are
+    defining `attach_user_key` as `"owner"`, because on the `Cinema` model, the foreign key field that relates to
+    the user model, has this name.
     """
 
     attach_user_key: str = None
@@ -306,6 +327,27 @@ class AttachUserOnUpdateMixin:
     So in case you are already using this module's `FilterQuerysetMixin`, and is using this property, then there
     is no need to repeat yourself here. But in case neither `self.attach_user_key` or `self.filter_user_key` are
     found, then `"user"` is used by default.
+
+    Here is a quick example:
+
+    ```python
+
+    from dj_drf_utils.mixins import AttachUserOnUpdateMixin
+    from rest_framework import generics
+    from rest_framework import permissions
+
+    from .serializers import CinemaSerializer
+
+    class CinemaView(AttachUserOnUpdateMixin, generics.ListCreateAPIView):
+        serializer_class = CinemaSerializer
+        permission_classes = [permissions.IsAuthenticated]
+        attach_user_key = "owner"
+
+    ```
+
+    This simple trick makes it possible to attach an user to a `Cinema` instance very easily. In this case, we are
+    defining `attach_user_key` as `"owner"`, because on the `Cinema` model, the foreign key field that relates to
+    the user model, has this name.
     """
 
     attach_user_key: str = None
@@ -327,4 +369,25 @@ class AttachUserToReqDataMixin(AttachUserOnCreateMixin, AttachUserOnUpdateMixin)
     So in case you are already using this module's `FilterQuerysetMixin`, and is using this property, then there
     is no need to repeat yourself here. But in case neither `self.attach_user_key` or `self.filter_user_key` are
     found, then `"user"` is used by default.
+
+    Here is a quick example:
+
+    ```python
+
+    from dj_drf_utils.mixins import AttachUserOnUpdateMixin
+    from rest_framework import generics
+    from rest_framework import permissions
+
+    from .serializers import CinemaSerializer
+
+    class CinemaView(AttachUserOnUpdateMixin, generics.ListCreateAPIView):
+        serializer_class = CinemaSerializer
+        permission_classes = [permissions.IsAuthenticated]
+        attach_user_key = "owner"
+
+    ```
+
+    This simple trick makes it possible to attach an user to a `Cinema` instance very easily. In this case, we are
+    defining `attach_user_key` as `"owner"`, because on the `Cinema` model, the foreign key field that relates to
+    the user model, has this name.
     """
