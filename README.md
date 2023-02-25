@@ -16,6 +16,9 @@ The examples on this documentation are about movies and cinemas, having entities
   - [SerializerByDetailActionsMixin](#serializerbydetailactionsmixin)
   - [SerializerBySafeActionsMixin](#serializerbysafeactionsmixin)
   - [FilterQuerysetMixin](#filterquerysetmixin)
+  - [AttachUserOnCreateMixin](#attachuseroncreatemixin)
+  - [AttachUserOnUpdateMixin](#attachuseronupdatemixin)
+  - [AttachUserToReqDataMixin](#attachusertoreqdatamixin)
 - [managers.py](#managerspy)
   - [CustomUserManager](#customusermanager)
 - [action\_patterns.py](#action_patternspy)
@@ -503,6 +506,36 @@ case. So that's why we don't need to define `exception_klass` too.
 You may have noticed that the `queryset` class property haven't been defined. That's not a
 problem, because this mixin guesses what is the apropriated model by accessing `self.serializer_class.Meta.model`.
 So as long as you define you model in that way, everything is OK.
+
+##
+
+### AttachUserOnCreateMixin
+
+This mixin overrides the `perform_create` method of generic views, and simply passes to the serializer
+`save` method an additional keyword argument. This attaches the current user to the `validated_data`
+argument on the serializer's `create` method. You can pass the following class property:
+
+`attach_user_key` -> A `str`, which defaults to `None`. It represents which is the name of the field
+that points to the user on your model. If ommited, it will try to get the value of `self.filter_user_key`.
+
+So in case you are already using this module's `FilterQuerysetMixin`, and is using this property, then there
+is no need to repeat yourself here. But in case neither `self.attach_user_key` or `self.filter_user_key` are
+found, then `"user"` is used by default.
+
+##
+
+### AttachUserOnUpdateMixin
+
+Exactly the same as [AttachUserOnCreateMixin](#attachuseroncreatemixin), but overrides the `perform_update`
+method.
+
+##
+
+### AttachUserToReqDataMixin
+
+A combination of [AttachUserOnCreateMixin](#attachuseroncreatemixin) and [AttachUserOnUpdateMixin](#attachuseronupdatemixin), 
+overriding both `perform_create` and `perform_update` methods of generic views.
+
 
 ---
 

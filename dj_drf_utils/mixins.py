@@ -168,7 +168,7 @@ class FilterQuerysetMixin:
 
     These are the class properties that this mixin accepts:
 
-    - `user_key` -> A `str` representing which keyword argument should be used for filtering by
+    - `filter_user_key` -> A `str` representing which keyword argument should be used for filtering by
     user. The default is `None`, meaning that the queryset will not be filtered by the logged in user, that
     is, `self.request.user`. If in your queryset there is a `FK` pointing to your project's auth user model, then this property should
     have the same name as this `FK` field.
@@ -176,10 +176,9 @@ class FilterQuerysetMixin:
     and the **value** is the **url param**.
     - `filter_query_params` -> A `dict[str, str]`, where the **key** is the name of the **field** to be searched,
     and the **value** represents the **query param** received in the request.
-    - `exception_klass` -> Should be an `exception` inheriting from `rest_framework.exceptions.APIException`. The
-    default value is `django.http.Http404`. In case no value is returned or another kind of error occurs, this
-    exception will be raised.
-    - `accept_empty` -> A `bool`, which defaults to `True`. If `False`, then the `exception_klass` will be raised
+    - `filter_exception_klass` -> Should be an `exception` inheriting from `rest_framework.exceptions.APIException`. The
+    default value is `django.http.Http404`. In case any kind of error occurs, this exception will be raised.
+    - `filter_accept_empty` -> A `bool`, which defaults to `True`. If `False`, then the `filter_exception_klass` will be raised
     in case the results are empty. Otherwise, an empty value will be returned normaly.
 
     Below is an example of how this might be useful:
@@ -200,7 +199,7 @@ class FilterQuerysetMixin:
     class TransactionView(FilterQuerysetMixin, ListCreateAPIView):
         serializer_class = TransactionSerializer
         permission_classes = [IsAuthenticated]
-        user_key = "user"
+        filter_user_key = "user"
         filter_kwargs = {"category": "category_id"}
         filter_query_params = {
             "month_id": "month_id",
@@ -222,7 +221,7 @@ class FilterQuerysetMixin:
 
     In the example above, we are defining a view for monetary transactions. We don't want
     users to see other user's transactions, so we attach all transactions to the logged in
-    user. By using the `user_key` class property, we tell the mixin that when filtering the
+    user. By using the `filter_user_key` class property, we tell the mixin that when filtering the
     queryset, it should use `user=self.request.user`.
 
     Also, all transactions have categories. And we want them always to be listed by category.
@@ -233,8 +232,8 @@ class FilterQuerysetMixin:
     the dictionary, we pass in the keys that will be used for filtering the queryset, just as if
     we were filtering the queryset manually. None of these query params are mandatory.
 
-    We are not declaring `accept_empty`, which means that we will not raise `exception_klass` in
-    any case. So that's why we don't need to define `exception_klass` too.
+    We are not declaring `filter_accept_empty`, which means that we will not raise `filter_exception_klass` in
+    any case. So that's why we don't need to define `filter_exception_klass` too.
 
     You may have noticed that the `queryset` class property haven't been defined. That's not a
     problem, because this mixin guesses what is the apropriated model by accessing `self.serializer_class.Meta.model`.
@@ -242,16 +241,18 @@ class FilterQuerysetMixin:
 
     """
 
-    user_key = None
+    filter_user_key = None
     filter_kwargs = {}
     filter_query_params = {}
-    exception_klass = Http404
-    accept_empty = True
+    filter_exception_klass = Http404
+    filter_accept_empty = True
 
     def get_queryset(self, **extra_filters):
         klass = self.serializer_class.Meta.model
 
-        queryset_filters = {self.user_key: self.request.user} if self.user_key else {}
+        queryset_filters = (
+            {self.filter_user_key: self.request.user} if self.filter_user_key else {}
+        )
 
         queryset_filters.update(
             {key: self.kwargs.get(value) for key, value in self.filter_kwargs.items()},
@@ -266,7 +267,64 @@ class FilterQuerysetMixin:
 
         return get_list_or_error(
             klass=klass,
-            error_klass=self.exception_klass,
-            accept_empty=self.accept_empty,
+            error_klass=self.filter_exception_klass,
+            accept_empty=self.filter_accept_empty,
             **queryset_filters
         )
+
+
+class AttachUserOnCreateMixin:
+    """
+    This mixin overrides the `perform_create` method of generic views, and simply passes to the serializer
+    `save` method an additional keyword argument. This attaches the current user to the `validated_data`
+    argument on the serializer's `create` method. You can pass the following class property:
+
+    `attach_user_key` -> A `str`, which defaults to `None`. It represents which is the name of the field
+    that points to the user on your model. If ommited, it will try to get the value of `self.filter_user_key`.
+
+    So in case you are already using this module's `FilterQuerysetMixin`, and is using this property, then there
+    is no need to repeat yourself here. But in case neither `self.attach_user_key` or `self.filter_user_key` are
+    found, then `"user"` is used by default.
+    """
+
+    attach_user_key: str = None
+
+    def perform_create(self, serializer):
+        user_key = self.attach_user_key or self.filter_user_key or "user"
+        serializer.save(**{user_key: self.request.user})
+
+
+class AttachUserOnUpdateMixin:
+    """
+    This mixin overrides the `perform_update` method of generic views, and simply passes to the serializer
+    `save` method an additional keyword argument. This attaches the current user to the `validated_data`
+    argument on the serializer's `update` method. You can pass the following class property:
+
+    `attach_user_key` -> A `str`, which defaults to `None`. It represents which is the name of the field
+    that points to the user on your model. If ommited, it will try to get the value of `self.filter_user_key`.
+
+    So in case you are already using this module's `FilterQuerysetMixin`, and is using this property, then there
+    is no need to repeat yourself here. But in case neither `self.attach_user_key` or `self.filter_user_key` are
+    found, then `"user"` is used by default.
+    """
+
+    attach_user_key: str = None
+
+    def perform_update(self, serializer):
+        user_key = self.attach_user_key or self.filter_user_key or "user"
+        serializer.save(**{user_key: self.request.user})
+
+
+class AttachUserToReqDataMixin(AttachUserOnCreateMixin, AttachUserOnUpdateMixin):
+    """
+    This mixin overrides both the `perform_create` and `perform_update` methods of generic views, and simply passes
+    to the serializer's `save` method an additional keyword argument. This attaches the current user to the `validated_data`
+    argument on the serializer's `update` method. You can pass the following class property:
+
+    `attach_user_key` -> A `str`, which defaults to `None`. It represents which is the name of the field
+    that points to the user on your model. If ommited, it will try to get the value of `self.filter_user_key`.
+
+    So in case you are already using this module's `FilterQuerysetMixin`, and is using this property, then there
+    is no need to repeat yourself here. But in case neither `self.attach_user_key` or `self.filter_user_key` are
+    found, then `"user"` is used by default.
+    """
