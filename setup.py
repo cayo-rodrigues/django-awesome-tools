@@ -7,7 +7,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="dj_drf_utils",
-    version="1.3.2",
+    version="1.3.3",
     description="Useful functions and classes for Django and Django Rest Framework",
     long_description=long_description,
     long_description_content_type="text/markdown",
