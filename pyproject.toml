@@ -7,7 +7,7 @@ packages = ["dj_drf_utils"]
 
 [project]
 name = "dj_drf_utils"
-version = "1.3.4"
+version = "1.4.0"
 authors = [
     {name = "Cayo Rodrigues", email = "cayo.rodrigues1914@gmail.com"},
 ]
@@ -21,7 +21,8 @@ keywords = [
     "django", "utils", "serializers", "generic", "views", "viewsets", "mixins",
     "email", "login", "model", "manager", "custom", "action", "shortcut", "error",
     "simple", "rest", "framework", "dj", "drf", "admin", "hash", "password", "user",
-    "filter", "queryset",
+    "filter", "queryset", "cache", "management", "by auth token", "by user", "group",
+    "key",
 ]
 license = {text = "MIT License"}
 classifiers = [
