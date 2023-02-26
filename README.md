@@ -29,6 +29,8 @@ The examples on this documentation are about movies and cinemas, having entities
   - [EraseCacheOnDestroyMixin](#erasecacheondestroymixin)
   - [EraseCacheOnDetailMixin](#erasecacheondetailmixin)
   - [EraseCacheOnDetailMixin](#erasecacheondetailmixin)
+  - [ManageCacheMixin](#managecachemixin)
+  - [FullManageCacheMixin](#fullmanagecachemixin)
   - [ByAuthToken Variations](#byauthtoken-variations)
   - [ByUser Variations](#byuser-variations)
 - [action\_patterns](#action_patterns)
