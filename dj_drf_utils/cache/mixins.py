@@ -230,7 +230,7 @@ def build_cache_mixins(
     class ManageCacheMixin(SetCacheOnListMixin, EraseCacheOnCreateMixin):
         """
         Upon calling the `list` method of the view, set the cache, but when calling the `create` method, then erase the cache.
-        This mixin is essensially just a combination of both `SetCacheOnListMixin` and `EraseCacheOnCreateMixin`.
+        This mixin is essentially just a combination of both `SetCacheOnListMixin` and `EraseCacheOnCreateMixin`.
         
         Here is an example:
         
@@ -256,7 +256,7 @@ def build_cache_mixins(
     class FullManageCacheMixin(ManageCacheMixin, EraseCacheOnDetailMixin):
         """
         Upon calling the `list` method of the view, set the cache, but when calling `create`, `update`, `partial_update` and
-        `destroy` methods, then erase the cache. This mixin is essensially just a combination of both `ManageCacheMixin` and
+        `destroy` methods, then erase the cache. This mixin is essentially just a combination of both `ManageCacheMixin` and
         `EraseCacheOnDetailMixin`.
         
         Here is an example:

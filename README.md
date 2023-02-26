@@ -800,7 +800,7 @@ by the list view, if there are any, but **only within the scope of the cache gro
 ### ManageCacheMixin
 
 Upon calling the `list` method of the view, set the cache, but when calling the `create` method, then erase the cache.
-This mixin is essensially just a combination of both [SetCacheOnListMixin](#setcacheonlistmixin) and [EraseCacheOnCreateMixin](#erasecacheoncreatemixin).
+This mixin is essentially just a combination of both [SetCacheOnListMixin](#setcacheonlistmixin) and [EraseCacheOnCreateMixin](#erasecacheoncreatemixin).
 
 Here is an example:
 
@@ -826,7 +826,7 @@ based on user or any headers on the request, if these arguments are passed to th
 ### FullManageCacheMixin
 
 Upon calling the `list` method of the view, set the cache, but when calling `create`, `update`, `partial_update` and
-`destroy` methods, then erase the cache. This mixin is essensially just a combination of both [ManageCacheMixin](#managecachemixin)
+`destroy` methods, then erase the cache. This mixin is essentially just a combination of both [ManageCacheMixin](#managecachemixin)
 and [EraseCacheOnDetailMixin](#erasecacheondetailmixin).
 
 Here is an example:
