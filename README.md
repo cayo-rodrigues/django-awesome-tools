@@ -5,12 +5,12 @@ This package provides useful functions and classes to be used in [Django](https:
 The examples on this documentation are about movies and cinemas, having entities like `Movie`, `Cinema`, `Room`, and `MovieSession`.
 
 - [Installation](#installation)
-- [helpers.py](#helperspy)
+- [helpers](#helpers)
   - [get\_object\_or\_error](#get_object_or_error)
   - [get\_list\_or\_error](#get_list_or_error)
   - [set\_and\_destroy](#set_and_destroy)
   - [bulk\_get\_or\_create](#bulk_get_or_create)
-- [mixins.py](#mixinspy)
+- [mixins](#mixins)
   - [SerializerByMethodMixin](#serializerbymethodmixin)
   - [SerializerByActionMixin](#serializerbyactionmixin)
   - [SerializerByDetailActionsMixin](#serializerbydetailactionsmixin)
@@ -19,10 +19,20 @@ The examples on this documentation are about movies and cinemas, having entities
   - [AttachUserOnCreateMixin](#attachuseroncreatemixin)
   - [AttachUserOnUpdateMixin](#attachuseronupdatemixin)
   - [AttachUserToReqDataMixin](#attachusertoreqdatamixin)
-- [managers.py](#managerspy)
+- [managers](#managers)
   - [CustomUserManager](#customusermanager)
-- [action\_patterns.py](#action_patternspy)
-- [admin.py](#adminpy)
+- [cache](#cache)
+  - [build\_cache\_mixins](#build_cache_mixins)
+  - [SetCacheOnListMixin](#setcacheonlistmixin)
+  - [EraseCacheOnCreateMixin](#erasecacheoncreatemixin)
+  - [EraseCacheOnUpdateMixin](#erasecacheonupdatemixin)
+  - [EraseCacheOnDestroyMixin](#erasecacheondestroymixin)
+  - [EraseCacheOnDetailMixin](#erasecacheondetailmixin)
+  - [EraseCacheOnDetailMixin](#erasecacheondetailmixin)
+  - [ByAuthToken Variations](#byauthtoken-variations)
+  - [ByUser Variations](#byuser-variations)
+- [action\_patterns](#action_patterns)
+- [admin](#admin)
   - [CustomUserAdmin](#customuseradmin)
 
 ## Installation
@@ -37,7 +47,7 @@ That's it!
 
 ---
 
-## helpers.py
+## helpers
 
 This module provides three useful functions. Two of them are a more powerful and versatille version of `get_object_or_404` and `get_list_or_404`, and the other is a handy shortcut.
 
@@ -301,7 +311,7 @@ happening under the hood. It's not complicated.
 
 ---
 
-## mixins.py
+## mixins
 
 This module provides useful mixins to be used in Django Rest Framework **generic views** and **viewsets**.
 
@@ -560,7 +570,7 @@ overriding both `perform_create` and `perform_update` methods of generic views.
 
 ---
 
-## managers.py
+## managers
 
 This module provides a custom user manager as a shortcut for whoever wants to customize
 django's authentication system to use a different field instead of username for login.
@@ -645,7 +655,239 @@ in your user model.
 
 ---
 
-## action_patterns.py
+## cache
+
+This subpackage provides a set of useful mixins that may be used for cache management. It also provides a function
+for building your own custom mixins.
+
+### build_cache_mixins
+
+This function returns a tuple of mixins used for cache management. It receives the following arguments:
+    
+- `cache_ttl` -> The ttl(time to live) for the cache is by default whatever you
+set in the `CACHE_TTL` variable at your project's `settings.py`, but you can totally override this here.
+The value of `cache_ttl` must be an `int`. It represents the time that the cache will persist, **in seconds**.
+In case `CACHE_TTL` is not present in `settings.py`, then it defaults to 10 minutes.
+- `vary_on_headers` -> This argument is a `tuple` that refers to which headers should be used when generating
+the cache key and cache group.
+- `vary_on_user` -> A boolean value that determines if the cache key and cache group should be isolated for each user.
+
+It is important to note that, besides the value of `vary_on_headers` and `vary_on_user`, cache keys are generated
+based on the request path and query params, and cache groups are generated based on the request path.
+
+Here is a simple example of how you could use it:
+
+```python
+
+from dj_drf_utils.cache import build_cache_mixins
+
+(
+    SetCacheOnListByMyCoolHeaderMixin,
+    EraseCacheOnCreateByMyCoolHeaderMixin,
+    EraseCacheOnUpdateByMyCoolHeaderMixin,
+    EraseCacheOnDestroyByMyCoolHeaderMixin,
+    EraseCacheOnDetailByMyCoolHeaderMixin,
+    ManageCacheByMyCoolHeaderMixin,
+    FullManageCacheByMyCoolHeaderMixin,
+) = build_cache_mixins(vary_on_headers=("my-cool-header",))
+
+```
+
+---
+
+In the example above, if the same request is made again on a cached view, but with a different value on `"my-cool-header"`
+header, then the view will not use the cached value, rather, it will cache the results also based on this header.
+
+Actually, this illustrates exactly how the cache management mixins on this package are generated.
+
+##
+
+### SetCacheOnListMixin
+
+Caches the results of the `list` method of generic views and viewsets. After setting the cache,
+if the same request is fired again, then it will return the cached value, instead of doing the
+whole thing again.
+
+Here is a simple example of how you could use this mixin.
+
+```python
+
+from dj_drf_utils.cache import SetCacheOnListMixin
+from rest_framework.generics import ListAPIView
+
+
+class MyAwesomeListView(SetCacheOnListMixin, ListAPIView):
+    # my awesome view stuff
+    ...
+
+```
+
+##
+
+### EraseCacheOnCreateMixin
+
+Upon calling the `create` method of generic views and viewsets, erase the cache. But what cache?
+The cache related to the group this mixin belongs to. It is by default determined by the url path,
+but may vary based on user or any headers on the request, if these arguments are passed to the
+`build_cache_mixins` function.
+
+Here is an example:
+
+```python
+
+from dj_drf_utils.cache import SetCacheOnListMixin, EraseCacheOnCreateMixin
+from rest_framework.generics import ListAPIView, CreateAPIView
+
+
+class MyAwesomeListView(SetCacheOnListMixin, ListAPIView):
+    # my awesome view stuff
+    ...
+
+class MyAwesomeCreateView(EraseCacheOnCreateMixin, CreateAPIView):
+    # my awesome view stuff
+    ...
+
+```
+
+In the example above, when the create view is called, then it will erase any cache keys that were set
+by the list view, if there are any, but **only within the scope of the cache group**.
+
+##
+
+### EraseCacheOnUpdateMixin
+
+Exactly the same as [EraseCacheOnCreateMixin](#erasecacheoncreatemixin), but with `update` and `partial_update`
+methods of generic views and viewsets.
+
+##
+
+### EraseCacheOnDestroyMixin
+
+Exactly the same as [EraseCacheOnCreateMixin](#erasecacheoncreatemixin) and [EraseCacheOnUpdateMixin](#erasecacheonupdatemixin),
+but with the `destroy` method of generic views and viewsets.
+
+##
+
+### EraseCacheOnDetailMixin
+
+This is just a combination of both [EraseCacheOnUpdateMixin](#erasecacheonupdatemixin) and [EraseCacheOnDestroyMixin](#erasecacheondestroymixin).
+
+Here is an example:
+        
+```python
+
+from dj_drf_utils.cache import SetCacheOnListMixin, EraseCacheOnDetailMixin
+from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
+
+
+class MyAwesomeListView(SetCacheOnListMixin, ListAPIView):
+    # my awesome view stuff
+    ...
+
+class MyAwesomeDetailView(EraseCacheOnDetailMixin, RetrieveUpdateDestroyAPIView):
+    # my awesome view stuff
+    ...
+
+```
+
+In the example above, when the detail view is called, then it will erase any cache keys that were set
+by the list view, if there are any, but **only within the scope of the cache group**.
+
+##
+
+### ManageCacheMixin
+
+Upon calling the `list` method of the view, set the cache, but when calling the `create` method, then erase the cache.
+This mixin is essensially just a combination of both [SetCacheOnListMixin](#setcacheonlistmixin) and [EraseCacheOnCreateMixin](#erasecacheoncreatemixin).
+
+Here is an example:
+
+```python
+
+from dj_drf_utils.cache import ManageCacheMixin
+from rest_framework.generics import ListCreateAPIView
+
+
+class MyAwesomeView(ManageCacheMixin, ListCreateAPIView):
+    # my awesome view stuff
+    ...
+
+```
+
+In the example above, when the `list` method of the view is called, then it will set the cache, but when the `create`
+method is called, then it will erase any cache keys that were set on the `list` method, if there are any, but
+**only within the scope of the cache group**. The cache group is by default determined by the url path, but may vary
+based on user or any headers on the request, if these arguments are passed to the `build_cache_mixins` function.
+
+##
+
+### FullManageCacheMixin
+
+Upon calling the `list` method of the view, set the cache, but when calling `create`, `update`, `partial_update` and
+`destroy` methods, then erase the cache. This mixin is essensially just a combination of both [ManageCacheMixin](#managecachemixin)
+and [EraseCacheOnDetailMixin](#erasecacheondetailmixin).
+
+Here is an example:
+
+```python
+
+from dj_drf_utils.cache import FullManageCacheMixin
+from rest_framework.viewsets import ModelViewSet
+
+
+class MyAwesomeViewSet(FullManageCacheMixin, ModelViewSet):
+    # my awesome viewset stuff
+    ...
+
+```
+
+In the example above, when the `list` method of the viewset is called, then it will set the cache, but when any of
+`create`, `update`, `partial_update` and `destroy` methods is called, then it will erase any cache keys that were
+set on the `list` method, if there are any, but **only within the scope of the cache group**. The cache group is
+by default determined by the url path, but may vary based on user or any headers on the request, if these arguments
+are passed to the `build_cache_mixins` function.
+
+##
+
+### ByAuthToken Variations
+
+### SetCacheOnListByAuthTokenMixin
+
+Exactly the same as [SetCacheOnListMixin](#setcacheonlistmixin), but grouping the cache by the `"Authorization"` header.
+This means that the cache will be isolated by the value of the auth token, even within the scope of the same user.
+
+The following mixins are all variations of the mixins described until now, just like the one above. They all group the
+cache by `"Authorization"` header. They are as follows:
+
+- ### EraseCacheOnCreateByAuthTokenMixin
+- ### EraseCacheOnUpdateByAuthTokenMixin
+- ### EraseCacheOnDestroyByAuthTokenMixin
+- ### EraseCacheOnDetailByAuthTokenMixin
+- ### ManageCacheByAuthTokenMixin
+- ### FullManageCacheByAuthTokenMixin
+
+##
+
+### ByUser Variations
+
+### SetCacheOnListByUserMixin
+
+Exactly the same as [SetCacheOnListMixin](#setcacheonlistmixin), but grouping the cache by `request.user`. This means that
+the cache will be isolated by user, even if the authorization token may expire.
+
+The following mixins are all variations of the mixins described until now, just like the one above. They all group the
+cache by `request.user`. They are as follows:
+
+- ### EraseCacheOnCreateByUserMixin
+- ### EraseCacheOnUpdateByUserMixin
+- ### EraseCacheOnDestroyByUserMixin
+- ### EraseCacheOnDetailByUserMixin
+- ### ManageCacheByUserMixin
+- ### FullManageCacheByUserMixin
+
+---
+
+## action_patterns
 
 Viewsets have the advantage of abstracting away the work of defining routes explicitly,
 but routers have some limits. They can only go to a certain depth in producing urls.
@@ -693,7 +935,7 @@ solve exactly this problem, and even more.
 
 ---
 
-## admin.py
+## admin
 
 This module provides a `CustomUserAdmin` class. It inherits from `django.contrib.auth.admin.UserAdmin`.
 Have you ever created a custom user model, added it to admin and then realized that your users passwords
