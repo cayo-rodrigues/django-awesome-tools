@@ -30,6 +30,7 @@ classifiers = [
 ]
 dependencies = [
     "djangorestframework",
+    "django-custom-cache-page",
 ]
 
 [project.urls]
