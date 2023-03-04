@@ -48,7 +48,7 @@ class CustomUserManager(BaseUserManager):
 
     # managers.py
 
-    from power_tools.managers import CustomUserManager
+    from awesome_tools.managers import CustomUserManager
 
     class MyOwnUserManager(CustomUserManager):
         user_start_active = False
@@ -85,7 +85,7 @@ class CustomUserManager(BaseUserManager):
     ---
 
     The `email` property is defined as unique, since it's gonna be used for login (as per the `USERNAME_FIELD`
-    property). The `objects` property may be either the standard `power_tools.managers.CustomUserManager`
+    property). The `objects` property may be either the standard `awesome_tools.managers.CustomUserManager`
     or your own manager that inherits from it. In the example above, we are using our own user manager,
     with some minor customizations. `REQUIRED_FIELDS` refer to the fields you are prompted when creating a
     superuser(it must not include the value defined for `USERNAME_FIELD` or "password"). Defining it to

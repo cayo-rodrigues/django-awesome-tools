@@ -47,7 +47,7 @@ def bulk_get_or_create(
 
     # serializers.py
 
-    from power_tools.helpers import bulk_get_or_create, set_and_destroy
+    from awesome_tools.helpers import bulk_get_or_create, set_and_destroy
 
 
     class MovieSerializer(serializers.ModelSerializer):

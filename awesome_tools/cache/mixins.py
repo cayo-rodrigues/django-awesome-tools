@@ -34,7 +34,7 @@ def build_cache_mixins(
     
     ```python
     
-    from power_tools.cache import build_cache_mixins
+    from awesome_tools.cache import build_cache_mixins
     
     (
         SetCacheOnListByMyCoolHeaderMixin,
@@ -71,7 +71,7 @@ def build_cache_mixins(
         
         ```python
         
-        from power_tools.cache import SetCacheOnListMixin
+        from awesome_tools.cache import SetCacheOnListMixin
         from rest_framework.generics import ListAPIView
 
         
@@ -103,7 +103,7 @@ def build_cache_mixins(
         
         ```python
         
-        from power_tools.cache import SetCacheOnListMixin, EraseCacheOnCreateMixin
+        from awesome_tools.cache import SetCacheOnListMixin, EraseCacheOnCreateMixin
         from rest_framework.generics import ListAPIView, CreateAPIView
 
         
@@ -137,7 +137,7 @@ def build_cache_mixins(
         
         ```python
         
-        from power_tools.cache import SetCacheOnListMixin, EraseCacheOnUpdateMixin
+        from awesome_tools.cache import SetCacheOnListMixin, EraseCacheOnUpdateMixin
         from rest_framework.generics import ListAPIView, UpdateAPIView
 
         
@@ -175,7 +175,7 @@ def build_cache_mixins(
         
         ```python
         
-        from power_tools.cache import SetCacheOnListMixin, EraseCacheOnDestroyMixin
+        from awesome_tools.cache import SetCacheOnListMixin, EraseCacheOnDestroyMixin
         from rest_framework.generics import ListAPIView, DestroyAPIView
 
         
@@ -208,7 +208,7 @@ def build_cache_mixins(
         
         ```python
         
-        from power_tools.cache import SetCacheOnListMixin, EraseCacheOnDetailMixin
+        from awesome_tools.cache import SetCacheOnListMixin, EraseCacheOnDetailMixin
         from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
 
         
@@ -236,7 +236,7 @@ def build_cache_mixins(
         
         ```python
         
-        from power_tools.cache import ManageCacheMixin
+        from awesome_tools.cache import ManageCacheMixin
         from rest_framework.generics import ListCreateAPIView
 
         
@@ -263,7 +263,7 @@ def build_cache_mixins(
         
         ```python
         
-        from power_tools.cache import FullManageCacheMixin
+        from awesome_tools.cache import FullManageCacheMixin
         from rest_framework.viewsets import ModelViewSet
 
         

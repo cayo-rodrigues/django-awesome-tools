@@ -27,7 +27,7 @@ Usage example:
 # urls.py
 
 from django.urls import path
-from power_tools.action_patterns import STANDARD_DETAIL_PATTERN, STANDARD_PATTERN
+from awesome_tools.action_patterns import STANDARD_DETAIL_PATTERN, STANDARD_PATTERN
 
 from . import views
 

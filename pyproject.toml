@@ -3,18 +3,18 @@ requires = ["setuptools", "setuptools-scm", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["power_tools"]
+packages = ["awesome_tools"]
 
 [project]
-name = "django_power_tools"
-version = "1.5.2"
+name = "django_awesome_tools"
+version = "1.5.4"
 authors = [
     {name = "Cayo Rodrigues", email = "cayo.rodrigues1914@gmail.com"},
 ]
 maintainers = [
     {name = "Cayo Rodrigues", email = "cayo.rodrigues1914@gmail.com"},
 ]
-description = "Useful functions and classes for Django and Django Rest Framework"
+description = "Awesome functions and classes for Django and Django Rest Framework"
 readme = "README.md"
 requires-python = ">=3.8"
 keywords = [
@@ -36,4 +36,4 @@ dependencies = [
 ]
 
 [project.urls]
-repository = "https://github.com/cayo-rodrigues/django-power-tools"
+repository = "https://github.com/cayo-rodrigues/django-awesome-tools"
