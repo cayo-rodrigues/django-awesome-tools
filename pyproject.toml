@@ -22,7 +22,7 @@ keywords = [
     "email", "login", "model", "manager", "custom", "action", "shortcut", "error",
     "simple", "rest", "framework", "dj", "drf", "admin", "hash", "password", "user",
     "filter", "queryset", "cache", "management", "by auth token", "by user", "group",
-    "key",
+    "key", "docs", "documentation", "spectacular", "customize", "swagger", "openapi",
 ]
 license = {text = "MIT License"}
 classifiers = [
