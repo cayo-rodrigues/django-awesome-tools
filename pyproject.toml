@@ -3,11 +3,11 @@ requires = ["setuptools", "setuptools-scm", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["dj_drf_utils"]
+packages = ["power_tools"]
 
 [project]
-name = "dj_drf_utils"
-version = "1.5.0"
+name = "django_power_tools"
+version = "1.5.2"
 authors = [
     {name = "Cayo Rodrigues", email = "cayo.rodrigues1914@gmail.com"},
 ]
@@ -36,4 +36,4 @@ dependencies = [
 ]
 
 [project.urls]
-repository = "https://github.com/cayo-rodrigues/dj-drf-utils"
+repository = "https://github.com/cayo-rodrigues/django-power-tools"

@@ -37,7 +37,7 @@ def build_list_docs(
     
     ```python
     
-    from dj_drf_utils.docs import build_list_docs
+    from power_tools.docs import build_list_docs
     from drf_spectacular.utils import OpenApiParameter
 
     summary = "A wonderful and brief description of the list action on an endpoint"
@@ -97,7 +97,7 @@ def build_create_docs(summary: str = " ", description: str = " ", *args, **kwarg
     
     ```python
     
-    from dj_drf_utils.docs import build_create_docs
+    from power_tools.docs import build_create_docs
 
     summary = "A wonderful and brief description of the create action on an endpoint"
 
@@ -149,7 +149,7 @@ def build_retrieve_docs(summary: str = " ", description: str = " ", *args, **kwa
     
     ```python
     
-    from dj_drf_utils.docs import build_retrieve_docs
+    from power_tools.docs import build_retrieve_docs
 
     summary = "A wonderful and brief description of the retrieve action on an endpoint"
 
@@ -197,7 +197,7 @@ def build_update_docs(summary: str = " ", description: str = " ", *args, **kwarg
     
     ```python
     
-    from dj_drf_utils.docs import build_update_docs
+    from power_tools.docs import build_update_docs
 
     summary = "A wonderful and brief description of the update action on an endpoint"
 
@@ -249,7 +249,7 @@ def build_destroy_docs(summary: str = " ", description: str = " ", *args, **kwar
     
     ```python
     
-    from dj_drf_utils.docs import build_destroy_docs
+    from power_tools.docs import build_destroy_docs
 
     summary = "A wonderful and brief description of the destroy action on an endpoint"
 
@@ -306,7 +306,7 @@ def build_list_create_docs(
     
     ```python
     
-    from dj_drf_utils.docs import build_list_create_docs
+    from power_tools.docs import build_list_create_docs
     from drf_spectacular.utils import OpenApiParameter
 
     summaries = {
@@ -375,7 +375,7 @@ def build_retrieve_update_destroy_docs(
     
     ```python
     
-    from dj_drf_utils.docs import build_retrieve_update_destroy_docs
+    from power_tools.docs import build_retrieve_update_destroy_docs
 
     summaries = {
         "retrieve": "A wonderful and brief description of the retrieve action on an endpoint",
@@ -443,7 +443,7 @@ def build_docs(
     
     ```python
     
-    from dj_drf_utils.docs import build_docs
+    from power_tools.docs import build_docs
     from drf_spectacular.utils import OpenApiParameter
 
     summaries = {
@@ -548,7 +548,7 @@ def build_docs_by_group(
     
     ```python
     
-    from dj_drf_utils.docs import build_docs_by_group
+    from power_tools.docs import build_docs_by_group
     from drf_spectacular.utils import OpenApiParameter
 
     summaries = {
@@ -621,7 +621,7 @@ def build_full_docs(
     
     ```python
     
-    from dj_drf_utils.docs import build_full_docs
+    from power_tools.docs import build_full_docs
     from drf_spectacular.utils import OpenApiParameter
 
     summaries = {

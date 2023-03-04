@@ -32,7 +32,7 @@ class CustomUserAdmin(UserAdmin):
 
     # admin.py
 
-    from dj_drf_utils.admin import CustomUserAdmin
+    from power_tools.admin import CustomUserAdmin
     from .models import User
 
     admin.site.register(User, CustomUserAdmin)
@@ -51,7 +51,7 @@ class CustomUserAdmin(UserAdmin):
 
     # admin.py
 
-    from dj_drf_utils.admin import CustomUserAdmin
+    from power_tools.admin import CustomUserAdmin
     from .models import User
 
     fields = ("cpf", "phone")

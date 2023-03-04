@@ -194,7 +194,7 @@ class FilterQuerysetMixin:
 
     # views.py
 
-    from dj_drf_utils.mixins import FilterQuerysetMixin
+    from power_tools.mixins import FilterQuerysetMixin
 
     class TransactionView(FilterQuerysetMixin, ListCreateAPIView):
         serializer_class = TransactionSerializer
@@ -290,7 +290,7 @@ class AttachUserOnCreateMixin:
 
     ```python
 
-    from dj_drf_utils.mixins import AttachUserOnCreateMixin
+    from power_tools.mixins import AttachUserOnCreateMixin
     from rest_framework import generics
     from rest_framework import permissions
 
@@ -332,7 +332,7 @@ class AttachUserOnUpdateMixin:
 
     ```python
 
-    from dj_drf_utils.mixins import AttachUserOnUpdateMixin
+    from power_tools.mixins import AttachUserOnUpdateMixin
     from rest_framework import generics
     from rest_framework import permissions
 
@@ -374,7 +374,7 @@ class AttachUserToReqDataMixin(AttachUserOnCreateMixin, AttachUserOnUpdateMixin)
 
     ```python
 
-    from dj_drf_utils.mixins import AttachUserOnUpdateMixin
+    from power_tools.mixins import AttachUserOnUpdateMixin
     from rest_framework import generics
     from rest_framework import permissions
 

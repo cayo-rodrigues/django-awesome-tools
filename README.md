@@ -1,8 +1,10 @@
-# dj-drf-utils
+# django-power-tools
 
-This package provides useful functions and classes to be used in [Django](https://www.djangoproject.com/) projects, specially when working with [Django Rest Framework](https://www.django-rest-framework.org/). Below are some further explation about how to use this package and what each module inside it does.
+This package provides useful and powerful functions and classes to be used in [Django](https://www.djangoproject.com/) projects, specially when working with [Django Rest Framework](https://www.django-rest-framework.org/). Below are some further explation about how to use this package and what each module inside it does.
 
 The examples on this documentation are about movies and cinemas, having entities like `Movie`, `Cinema`, `Room`, and `MovieSession`.
+
+## Table of Contents
 
 - [Installation](#installation)
 - [helpers](#helpers)
@@ -53,7 +55,7 @@ The examples on this documentation are about movies and cinemas, having entities
 First, run:
 
 ```bash
-pip install dj-drf-utils
+pip install django-power-tools
 ```
 
 That's it!
@@ -106,7 +108,7 @@ class RoomNotFoundError(APIException):
 ```python
 # views.py
 
-from dj_drf_utils.helpers import get_object_or_error
+from power_tools.helpers import get_object_or_error
 
 
 cinema = get_object_or_error(Cinema, CinemaNotFoundError, pk=self.kwargs['cinema_id'])
@@ -162,7 +164,7 @@ class NoMovieSessionsError(APIException):
 ```python
 # views.py
 
-from dj_drf_utils.helpers import get_object_or_error, get_list_or_error
+from power_tools.helpers import get_object_or_error, get_list_or_error
 
 
 cinema = get_object_or_error(Cinema, CinemaNotFoundError, pk=self.kwargs['cinema_id'])
@@ -213,7 +215,7 @@ class Video(models.Model):
 ```python
 # serializers.py
 
-from dj_drf_utils.helpers import set_and_destroy
+from power_tools.helpers import set_and_destroy
 
 
 class MovieSerializer(serializers.ModelSerializer):
@@ -280,7 +282,7 @@ Usage example:
 ```python
 # serializers.py
 
-from dj_drf_utils.helpers import bulk_get_or_create, set_and_destroy
+from power_tools.helpers import bulk_get_or_create, set_and_destroy
 
 
 class MovieSerializer(serializers.ModelSerializer):
@@ -344,7 +346,7 @@ Below is an example:
 ```python
 # views.py
 
-from dj_drf_utils.mixins import SerializerByMethodMixin
+from power_tools.mixins import SerializerByMethodMixin
 
 
 class MyBeautifulGenericView(SerializerByMethodMixin, ListCreateAPIView):
@@ -373,7 +375,7 @@ Below is an example:
 ```python
 # views.py
 
-from dj_drf_utils.mixins import SerializerByActionMixin
+from power_tools.mixins import SerializerByActionMixin
 
 
 class MyBeautifulViewSet(SerializerByActionMixin, ModelViewSet):
@@ -405,7 +407,7 @@ Below is an example:
 ```python
 # views.py
 
-from dj_drf_utils.mixins import SerializerByDetailActionsMixin
+from power_tools.mixins import SerializerByDetailActionsMixin
 
 
 class MyBeautifulViewSet(SerializerByDetailActionsMixin, ModelViewSet):
@@ -439,7 +441,7 @@ Below is an example:
 ```python
 # views.py
 
-from dj_drf_utils.mixins import SerializerBySafeActionsMixin
+from power_tools.mixins import SerializerBySafeActionsMixin
 
 
 class MyBeautifulViewSet(SerializerBySafeActionsMixin, ModelViewSet):
@@ -487,7 +489,7 @@ Below is an example of how this might be useful:
 
 # views.py
 
-from dj_drf_utils.mixins import FilterQuerysetMixin
+from power_tools.mixins import FilterQuerysetMixin
 
 class TransactionView(FilterQuerysetMixin, ListCreateAPIView):
     serializer_class = TransactionSerializer
@@ -549,7 +551,7 @@ Here is a quick example:
 
 ```python
 
-from dj_drf_utils.mixins import AttachUserOnUpdateMixin
+from power_tools.mixins import AttachUserOnUpdateMixin
 from rest_framework import generics
 from rest_framework import permissions
 
@@ -626,7 +628,7 @@ Below is an example of how you may customize the behaviour of this class:
 ```python
 # managers.py
 
-from dj_drf_utils.managers import CustomUserManager
+from power_tools.managers import CustomUserManager
 
 
 class MyOwnUserManager(CustomUserManager):
@@ -658,7 +660,7 @@ class MyUser(AbstractUser):
 ```
 
 The `email` property is defined as unique, since it's gonna be used for login (as per the `USERNAME_FIELD`
-property). The `objects` property may be either the standard `dj_drf_utils.managers.CustomUserManager`
+property). The `objects` property may be either the standard `power_tools.managers.CustomUserManager`
 or your own manager that inherits from it. In the example above, we are using our own user manager,
 with some minor customizations. `REQUIRED_FIELDS` refer to the fields you are prompted when creating a
 superuser (it must not include the value defined for `USERNAME_FIELD` or `"password"`). Defining it to
@@ -692,7 +694,7 @@ Here is a simple example of how you could use it:
 
 ```python
 
-from dj_drf_utils.cache import build_cache_mixins
+from power_tools.cache import build_cache_mixins
 
 (
     SetCacheOnListByMyCoolHeaderMixin,
@@ -725,7 +727,7 @@ Here is a simple example of how you could use this mixin.
 
 ```python
 
-from dj_drf_utils.cache import SetCacheOnListMixin
+from power_tools.cache import SetCacheOnListMixin
 from rest_framework.generics import ListAPIView
 
 
@@ -748,7 +750,7 @@ Here is an example:
 
 ```python
 
-from dj_drf_utils.cache import SetCacheOnListMixin, EraseCacheOnCreateMixin
+from power_tools.cache import SetCacheOnListMixin, EraseCacheOnCreateMixin
 from rest_framework.generics import ListAPIView, CreateAPIView
 
 
@@ -789,7 +791,7 @@ Here is an example:
         
 ```python
 
-from dj_drf_utils.cache import SetCacheOnListMixin, EraseCacheOnDetailMixin
+from power_tools.cache import SetCacheOnListMixin, EraseCacheOnDetailMixin
 from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
 
 
@@ -817,7 +819,7 @@ Here is an example:
 
 ```python
 
-from dj_drf_utils.cache import ManageCacheMixin
+from power_tools.cache import ManageCacheMixin
 from rest_framework.generics import ListCreateAPIView
 
 
@@ -844,7 +846,7 @@ Here is an example:
 
 ```python
 
-from dj_drf_utils.cache import FullManageCacheMixin
+from power_tools.cache import FullManageCacheMixin
 from rest_framework.viewsets import ModelViewSet
 
 
@@ -929,7 +931,7 @@ endpoint.
 Here's an example:
 
 ```python
-from dj_drf_utils.docs import build_list_docs
+from power_tools.docs import build_list_docs
 from drf_spectacular.utils import OpenApiParameter
 
 summary = "A wonderful and brief description of the list action on an endpoint"
@@ -997,7 +999,7 @@ and the values are the desciptions.
 Here's an example:
 
 ```python
-from dj_drf_utils.docs import build_list_create_docs
+from power_tools.docs import build_list_create_docs
 from drf_spectacular.utils import OpenApiParameter
 
 summaries = {
@@ -1046,7 +1048,7 @@ and the values are the desciptions.
 Here's an example:
 
 ```python
-from dj_drf_utils.docs import build_retrieve_update_destroy_docs
+from power_tools.docs import build_retrieve_update_destroy_docs
 
 summaries = {
     "retrieve": "A wonderful and brief description of the retrieve action on an endpoint",
@@ -1089,7 +1091,7 @@ Return a tuple of five mixins, each of which are built using `build_list_docs`, 
 Here's an example:
 
 ```python
-from dj_drf_utils.docs import build_docs
+from power_tools.docs import build_docs
 from drf_spectacular.utils import OpenApiParameter
 
 summaries = {
@@ -1154,7 +1156,7 @@ It receives the following arguments:
 Here's an example:
 
 ```python
-from dj_drf_utils.docs import build_docs_by_group
+from power_tools.docs import build_docs_by_group
 from drf_spectacular.utils import OpenApiParameter
 
 summaries = {
@@ -1209,7 +1211,7 @@ which `build_docs_by_group` returns. It receives the following arguments:
 Here's an example:
 
 ```python
-from dj_drf_utils.docs import build_full_docs
+from power_tools.docs import build_full_docs
 from drf_spectacular.utils import OpenApiParameter
 
 summaries = {
@@ -1266,7 +1268,7 @@ Usage example:
 # urls.py
 
 from django.urls import path
-from dj_drf_utils.action_patterns import STANDARD_DETAIL_PATTERN, STANDARD_PATTERN
+from power_tools.action_patterns import STANDARD_DETAIL_PATTERN, STANDARD_PATTERN
 
 from . import views
 
@@ -1313,7 +1315,7 @@ Below is an usage example:
 ```python
 # admin.py
 
-from dj_drf_utils.admin import CustomUserAdmin
+from power_tools.admin import CustomUserAdmin
 from .models import User
 
 admin.site.register(User, CustomUserAdmin)
@@ -1328,7 +1330,7 @@ you could do something like this:
 
 # admin.py
 
-from dj_drf_utils.admin import CustomUserAdmin
+from power_tools.admin import CustomUserAdmin
 from .models import User
 
 fields = ("cpf", "phone")

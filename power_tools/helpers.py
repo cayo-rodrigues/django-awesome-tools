@@ -47,7 +47,7 @@ def bulk_get_or_create(
 
     # serializers.py
 
-    from dj_drf_utils.helpers import bulk_get_or_create, set_and_destroy
+    from power_tools.helpers import bulk_get_or_create, set_and_destroy
 
 
     class MovieSerializer(serializers.ModelSerializer):
