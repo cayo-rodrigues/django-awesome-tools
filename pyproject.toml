@@ -7,7 +7,7 @@ packages = ["dj_drf_utils"]
 
 [project]
 name = "dj_drf_utils"
-version = "1.4.2"
+version = "1.5.0"
 authors = [
     {name = "Cayo Rodrigues", email = "cayo.rodrigues1914@gmail.com"},
 ]
