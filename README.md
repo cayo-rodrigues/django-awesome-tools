@@ -1,4 +1,8 @@
-# django-awesome-tools
+
+<div align="center">
+    <img src="./icon.png">
+</div>
+<h1 align="center">Django Awesome Tools</h1>
 
 This package provides useful and powerful functions and classes to be used in [Django](https://www.djangoproject.com/) projects, specially when working with [Django Rest Framework](https://www.django-rest-framework.org/). Below are some further explation about how to use this package and what each module inside it does.
 
