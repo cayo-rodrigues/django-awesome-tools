@@ -233,7 +233,7 @@ class FilterQuerysetMixin:
     we were filtering the queryset manually. None of these query params are mandatory.
 
     We are not declaring `filter_accept_empty`, which means that we will not raise `filter_exception_klass` in
-    any case. So that's why we don't need to define `filter_exception_klass` too.
+    any case (because the default value is `True`). So that's why we don't need to define `filter_exception_klass` too.
 
     You may have noticed that the `queryset` class property haven't been defined. That's not a
     problem, because this mixin guesses what is the apropriated model by accessing `self.serializer_class.Meta.model`.

@@ -7,7 +7,7 @@ packages = ["awesome_tools"]
 
 [project]
 name = "django_awesome_tools"
-version = "1.5.4"
+version = "1.5.5"
 authors = [
     {name = "Cayo Rodrigues", email = "cayo.rodrigues1914@gmail.com"},
 ]

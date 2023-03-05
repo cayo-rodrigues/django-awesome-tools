@@ -1,12 +1,9 @@
-
 <div align="center">
-    <img src="./icon.png">
+    <img src="https://user-images.githubusercontent.com/87717182/222975347-32f01617-71a4-42f3-9db2-248a52ffe819.png">
 </div>
 <h1 align="center">Django Awesome Tools</h1>
 
 This package provides useful and powerful functions and classes to be used in [Django](https://www.djangoproject.com/) projects, specially when working with [Django Rest Framework](https://www.django-rest-framework.org/). Below are some further explation about how to use this package and what each module inside it does.
-
-The examples on this documentation are about movies and cinemas, having entities like `Movie`, `Cinema`, `Room`, and `MovieSession`.
 
 ## Table of Contents
 
@@ -465,7 +462,7 @@ and by query params.
 
 These are the class properties that this mixin accepts:
 
-- `user_key` -> A `str` representing which keyword argument should be used for filtering by
+- `filter_user_key` -> A `str` representing which keyword argument should be used for filtering by
 user. The default is `None`, meaning that the queryset will not be filtered by the logged in user, that
 is, `self.request.user`. If in your queryset there is a `FK` pointing to your project's auth user model, then this property should
 have the same name as this `FK` field.
@@ -473,16 +470,15 @@ have the same name as this `FK` field.
 and the **value** is the **url param**.
 - `filter_query_params` -> A `dict[str, str]`, where the **key** is the name of the **field** to be searched,
 and the **value** represents the **query param** received in the request.
-- `exception_klass` -> Should be an `exception` inheriting from `rest_framework.exceptions.APIException`. The
+- `filter_exception_klass` -> Should be an `exception` inheriting from `rest_framework.exceptions.APIException`. The
 default value is `django.http.Http404`. In case no value is returned or another kind of error occurs, this
 exception will be raised.
-- `accept_empty` -> A `bool`, which defaults to `True`. If `False`, then the `exception_klass` will be raised
+- `filter_accept_empty` -> A `bool`, which defaults to `True`. If `False`, then the `exception_klass` will be raised
 in case the results are empty. Otherwise, an empty value will be returned normaly.
 
 Below is an example of how this might be useful:
 
 ```python
-
 # request endpoint
 
 "/categories/<category_id>/transactions/"
@@ -490,7 +486,6 @@ Below is an example of how this might be useful:
 ```
 
 ```python
-
 # views.py
 
 from awesome_tools.mixins import FilterQuerysetMixin
@@ -498,7 +493,7 @@ from awesome_tools.mixins import FilterQuerysetMixin
 class TransactionView(FilterQuerysetMixin, ListCreateAPIView):
     serializer_class = TransactionSerializer
     permission_classes = [IsAuthenticated]
-    user_key = "user"
+    filter_user_key = "user"
     filter_kwargs = {"category": "category_id"}
     filter_query_params = {
         "month_id": "month_id",
@@ -513,24 +508,24 @@ class TransactionView(FilterQuerysetMixin, ListCreateAPIView):
         "is_recurrent": "is_recurrent",
         "installments": "installments",
     }
-
 ```
 
 In the example above, we are defining a view for monetary transactions. We don't want
 users to see other user's transactions, so we attach all transactions to the logged in
-user. By using the `user_key` class property, we tell the mixin that when filtering the
+user. By using the `filter_user_key` class property, we tell the mixin that when filtering the
 queryset, it should use `user=self.request.user`.
 
 Also, all transactions have categories. And we want them always to be listed by category.
 So in the url, we receive the `<category_id>` param. So that's why we declare `filter_kwargs`
 in that way.
 
-As for the `filter_query_params` property, please note how interesting it is. In the keys of
+As for the `filter_query_params` property, please note how interesting it is. In the **keys** of
 the dictionary, we pass in the keys that will be used for filtering the queryset, just as if
-we were filtering the queryset manually. None of these query params are mandatory.
+we were filtering the queryset manually. And the **values** correspond to the query param that we
+expect to receive in the request. None of these query params are mandatory.
 
-We are not declaring `accept_empty`, which means that we will not raise `exception_klass` in any
-case. So that's why we don't need to define `exception_klass` too.
+We are not declaring `filter_accept_empty`, which means that we will not raise `filter_exception_klass`
+in any case (because the default value is `True`). So that's why we don't need to define `filter_exception_klass` too.
 
 You may have noticed that the `queryset` class property haven't been defined. That's not a
 problem, because this mixin guesses what is the apropriated model by accessing `self.serializer_class.Meta.model`.
