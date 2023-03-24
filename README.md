@@ -508,6 +508,7 @@ class TransactionView(FilterQuerysetMixin, ListCreateAPIView):
         "is_recurrent": "is_recurrent",
         "installments": "installments",
     }
+    filter_order_by = ["-created_at"]
 ```
 
 In the example above, we are defining a view for monetary transactions. We don't want
@@ -526,6 +527,9 @@ expect to receive in the request. None of these query params are mandatory.
 
 We are not declaring `filter_accept_empty`, which means that we will not raise `filter_exception_klass`
 in any case (because the default value is `True`). So that's why we don't need to define `filter_exception_klass` too.
+
+Furthermore, we are ordering the queryset results by their creation date (in descending order) with the
+`filter_order_by` property.
 
 You may have noticed that the `queryset` class property haven't been defined. That's not a
 problem, because this mixin guesses what is the apropriated model by accessing `self.serializer_class.Meta.model`.

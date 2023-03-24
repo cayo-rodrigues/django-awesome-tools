@@ -2,6 +2,7 @@
 This module provides useful mixins to be used in Django Rest Framework **generic views** and **viewsets**.
 """
 
+from django.db.models import QuerySet
 from django.http import Http404
 from rest_framework.serializers import Serializer
 
@@ -180,6 +181,7 @@ class FilterQuerysetMixin:
     default value is `django.http.Http404`. In case any kind of error occurs, this exception will be raised.
     - `filter_accept_empty` -> A `bool`, which defaults to `True`. If `False`, then the `filter_exception_klass` will be raised
     in case the results are empty. Otherwise, an empty value will be returned normaly.
+    - `filter_order_by` -> A `list[str]`, representing which fields should be used for ordering the queryset results
 
     Below is an example of how this might be useful:
 
@@ -214,6 +216,7 @@ class FilterQuerysetMixin:
             "is_recurrent": "is_recurrent",
             "installments": "installments",
         }
+        filter_order_by = ["-created_at"]
 
     ```
 
@@ -235,6 +238,9 @@ class FilterQuerysetMixin:
     We are not declaring `filter_accept_empty`, which means that we will not raise `filter_exception_klass` in
     any case (because the default value is `True`). So that's why we don't need to define `filter_exception_klass` too.
 
+    Furthermore, we are ordering the queryset results by their creation date (in descending order) with the
+    `filter_order_by` property.
+
     You may have noticed that the `queryset` class property haven't been defined. That's not a
     problem, because this mixin guesses what is the apropriated model by accessing `self.serializer_class.Meta.model`.
     So as long as you define you model in that way, everything is OK.
@@ -246,6 +252,7 @@ class FilterQuerysetMixin:
     filter_query_params = {}
     filter_exception_klass = Http404
     filter_accept_empty = True
+    filter_order_by = []
 
     def get_queryset(self, **extra_filters):
         klass = self.serializer_class.Meta.model
@@ -265,12 +272,17 @@ class FilterQuerysetMixin:
 
         queryset_filters.update(**extra_filters)
 
-        return get_list_or_error(
+        results = get_list_or_error(
             klass=klass,
             error_klass=self.filter_exception_klass,
             accept_empty=self.filter_accept_empty,
             **queryset_filters
         )
+
+        if isinstance(results, QuerySet) and self.filter_order_by:
+            results = results.order_by(*self.filter_order_by)
+
+        return results
 
 
 class AttachUserOnCreateMixin:
