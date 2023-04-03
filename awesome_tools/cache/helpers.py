@@ -1,4 +1,5 @@
 from custom_cache_page.utils import hash_key
+from django.conf import settings
 from django.core.cache import cache
 from django.http import HttpRequest
 
@@ -16,7 +17,10 @@ def gen_cache_group(vary_on_headers: tuple = (), vary_on_user: bool = False):
 
 
 def gen_cache_key(
-    vary_on_headers: tuple = (), vary_on_user: bool = False, use_group: bool = True
+    vary_on_headers: tuple = (),
+    vary_on_user: bool = False,
+    use_group: bool = True,
+    timeout: int = getattr(settings, "CACHE_TTL", 60 * 10),
 ):
     def _gen_cache_key(request: HttpRequest):
         key = f"{request.path}_{request.GET.dict()}"
@@ -26,7 +30,7 @@ def gen_cache_key(
         if use_group:
             group = gen_cache_group(vary_on_headers, vary_on_user)(request)
             hashed_key = hash_key(f"{None}:{group}:{0}:{key}")
-            cache.get_or_set(f"{group}:{key}", hashed_key)
+            cache.get_or_set(f"{group}:{key}", hashed_key, timeout=timeout)
 
         return key
 
